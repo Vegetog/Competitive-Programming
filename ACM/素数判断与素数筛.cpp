@@ -7,6 +7,22 @@ const int N=2e6+10;
 const int mod=1e9;
 typedef pair<int,int> PII;
 
+//---线性筛----//
+vector<int> primes;
+vector<bool> isp;
+void get_primes(int n){
+    isp.assign(n+1,true);
+    isp[0]=isp[1]=false;
+    primes.clear();
+    for(int i = 2; i <= n; i++){
+        if(isp[i]) primes.push_back(i);
+        for(int j = 0; j < primes.size() && primes[j] <= n / i; j++){
+            isp[primes[j] * i] = false;
+            if(i % primes[j] == 0) break;
+        }
+    }
+}
+
 bool isprime(int n){//***判断是否为素数***
     if(n < 2) return false;
     for(int i = 2;i <= n / i;i ++){ 

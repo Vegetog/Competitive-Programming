@@ -24,9 +24,12 @@ void SINGLE_TEST()
 }
 
 signed main() {
-    cin.tie(nullptr)->sync_with_stdio(false);
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr),cout.tie(nullptr);
 
     int SAMPLES = 1;
     cin >> SAMPLES;
-    while (SAMPLES--) SINGLE_TEST();
+    for(int CUR=1;CUR<=SAMPLES;CUR++){
+        SINGLE_TEST();
+    }
 }

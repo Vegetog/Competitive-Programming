@@ -8,6 +8,9 @@
         "map": "cpp",
         "ios": "cpp",
         "string": "cpp",
-        "istream": "cpp"
+        "istream": "cpp",
+        "__split_buffer": "cpp",
+        "deque": "cpp",
+        "list": "cpp"
     }
 }
