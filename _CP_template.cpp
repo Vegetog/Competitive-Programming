@@ -6,9 +6,7 @@ using namespace std;
 const ll INF = 2E18 + 10;
 #ifdef __clang__
     template <typename T>
-    inline int my_lg(T n) {
-        return (n > 0) ? static_cast<int>(log2(n)) : -1;
-    }
+    inline int my_lg(T n) {return (n > 0) ? static_cast<int>(log2(n)) : -1;}
     #define __lg my_lg
     #define __gcd gcd
 #endif
