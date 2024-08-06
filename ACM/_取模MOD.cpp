@@ -1,15 +1,14 @@
 #include <bits/stdc++.h>
-#define int long long
-using ll = long long;
-using PII = std::array<int, 2>;
-using namespace std;
-const ll INF = 2E18 + 10;
-#define inr(ITEM, a, b) (a <= ITEM && ITEM <= b)
 #ifndef ONLINE_JUDGE
-#include "_debug.h"
-#define COUT(ITEM) std::cout << #ITEM << "=" << ITEM << '\n';
-#define CERR(ITEM) std::cerr << #ITEM << "=" << ITEM << '\n';
+#include "_my_utils.h" 
 #endif
+
+#define int int64_t
+#define new _MY_NEW_
+
+using namespace std;
+using ll = int64_t;
+using PII = array<int, 2>;
 
 template <class T>
 constexpr T power(T a, ll b) {
@@ -127,10 +126,6 @@ constexpr MInt<P> CInv = MInt<P>(V).inv();
 constexpr int P = 998244353;
 using Z = MInt<P>;
 
-// struct cmp{bool operator()(const int & x, const int &y) const{ return x<y;
-// }};
-const int N = 2E6 + 10;
-
 Z fac[N], invfac[N];
 
 void INIT() {
@@ -148,12 +143,21 @@ inline Z C(int a, int b) {
     return fac[a] * invfac[b] * invfac[a - b];
 }
 
-void SINGLE_TEST() {}
+constexpr int64_t INF = 2E18 + 10;
+constexpr int N = 2E6 + 10;
 
-signed main() {
-    cin.tie(nullptr)->sync_with_stdio(false);
+void SINGLE_TEST() 
+{
+    
+}
+
+signed main(){
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr),cout.tie(nullptr);
     INIT();
     int SAMPLES = 1;
     cin >> SAMPLES;
-    while (SAMPLES--) SINGLE_TEST();
+    for(int CUR=1;CUR<=SAMPLES;CUR++){
+        SINGLE_TEST();
+    }
 }
