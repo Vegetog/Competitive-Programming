@@ -1,3 +1,4 @@
+// https://github.com/Vegetog/Competitive-Programming/blob/main/_my_utils.h
 #ifndef _MY_UTILS_H
 #define _MY_UTILS_H
 
