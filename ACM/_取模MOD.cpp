@@ -114,17 +114,21 @@ struct MInt {
         return lhs.val() != rhs.val();
     }
 };
-
+//-------------------------------------//
 template <>
-// int MInt<0>::Mod = 1e9+7;
+// int MInt<0>::Mod = 1E9+7;
 int MInt<0>::Mod = 998244353;
 
 template <int V, int P>
 constexpr MInt<P> CInv = MInt<P>(V).inv();
 
-// constexpr int P = 1e9+7;
+// constexpr int P = 1E9+7;
 constexpr int P = 998244353;
 using Z = MInt<P>;
+
+constexpr int64_t INF = 2E18 + 10;
+constexpr int N = 2E6 + 10;
+//-------------------------------------//
 
 Z fac[N], invfac[N];
 
@@ -142,9 +146,6 @@ inline Z C(int a, int b) {
     if (a < 0 || b < 0 || a < b) return 0;
     return fac[a] * invfac[b] * invfac[a - b];
 }
-
-constexpr int64_t INF = 2E18 + 10;
-constexpr int N = 2E6 + 10;
 
 void SINGLE_TEST() 
 {
