@@ -1,6 +1,19 @@
-// debug.h
-#ifndef DEBUG_H
-#define DEBUG_H
+#ifndef _MY_UTILS_H
+#define _MY_UTILS_H
+
+#ifdef __clang__
+#include <cmath>
+#include <numeric>  // For std::gcd
+
+template <typename T>
+inline int my_lg(T n) {
+    return (n > 0) ? static_cast<int>(std::log2(n)) : -1;
+}
+
+#define __lg my_lg
+#define __gcd std::gcd
+
+#endif  // __clang__
 
 #include <array>
 #include <iostream>
@@ -11,6 +24,7 @@
 // #include <multiset>
 
 #define EL std::cout << "\n";
+#define SE std::cout << "--------------------------------\n";
 #define COUT(ITEM) std::cout << #ITEM << "=" << ITEM << '\n';
 #define CERR(ITEM) std::cerr << #ITEM << "=" << ITEM << '\n';
 
@@ -77,4 +91,5 @@ void debug(const std::multiset<T, std::greater<>>& v) {
     for (const auto& x : v) std::cout << x << " ";
     std::cout << "\n";
 }
-#endif  // DEBUG_H
+
+#endif  // _MY_UTILS_H
