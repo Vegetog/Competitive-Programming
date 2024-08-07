@@ -15,7 +15,12 @@ constexpr int N = 2E6 + 10;
 
 void SINGLE_TEST() 
 {
-    
+    int y;cin>>y;
+    if(y%400==0 || y%100!=0 && y%4==0){
+        cout<<366<<'\n';
+    }else{
+        cout<<365<<'\n';
+    }
 }
 
 signed main(){
@@ -23,7 +28,7 @@ signed main(){
     cin.tie(nullptr),cout.tie(nullptr);
 
     int SAMPLES = 1;
-    cin >> SAMPLES;
+    // cin >> SAMPLES;
     for(int CUR=1;CUR<=SAMPLES;CUR++){
         SINGLE_TEST();
     }

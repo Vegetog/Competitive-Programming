@@ -159,7 +159,7 @@
             "constexpr int P = 998244353;",
             "using Z = MInt<P>;",
             "",
-            "constexpr int64_t INF = 2E18 + 10;",
+            "constexpr long long INF = 2E18 + 10;",
             "constexpr int N = 2E6 + 10;",
             "//-------------------------------------//",
             "",
