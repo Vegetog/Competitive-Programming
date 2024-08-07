@@ -17,7 +17,7 @@ long long qpow1(long long a, long long b) {
   return res;
 }
 template<class T>
-constexpr T power(T a, ll b,ll mod=INF) {
+constexpr T power(T a, ll b,ll mod) {
     a %= mod;
     T res = 1;
     for (; b; b /= 2, a *= a, a %= mod) {
