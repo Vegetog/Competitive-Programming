@@ -76,5 +76,6 @@
         "variant": "cpp",
         "algorithm": "cpp",
         "version": "cpp"
-    }
+    },
+    "commentTranslate.hover.enabled": true
 }

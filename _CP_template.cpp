@@ -5,6 +5,7 @@
 
 #define int long long
 #define new _MY_NEW_
+#define lg(ITEM) static_cast<int>(std::log2(ITEM))
 
 using namespace std;
 using ll = long long;
