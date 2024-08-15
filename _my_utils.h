@@ -29,6 +29,8 @@ inline int my_lg(T n) {
 #define COUT(ITEM) std::cout << #ITEM << "=" << ITEM << '\n';
 #define CERR(ITEM) std::cerr << #ITEM << "=" << ITEM << '\n';
 
+std::mt19937_64 rng(std::chrono::steady_clock::now().time_since_epoch().count());
+
 using ll = long long;
 
 template <class T>
