@@ -75,7 +75,9 @@
         "valarray": "cpp",
         "variant": "cpp",
         "algorithm": "cpp",
-        "version": "cpp"
+        "version": "cpp",
+        "memory": "cpp",
+        "print": "cpp"
     },
     "commentTranslate.hover.enabled": true
 }
