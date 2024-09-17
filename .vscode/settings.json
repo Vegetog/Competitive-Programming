@@ -79,5 +79,6 @@
         "memory": "cpp",
         "print": "cpp"
     },
-    "commentTranslate.hover.enabled": true
+    "commentTranslate.hover.enabled": true,
+    "C_Cpp.default.compilerPath": "/usr/bin/clang++"
 }

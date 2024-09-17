@@ -25,6 +25,4 @@ signed main() {
     for (int CUR = 1; CUR <= SAMPLES; CUR++) {
         SINGLE_TEST();
     }
-
-    return 0;
 }

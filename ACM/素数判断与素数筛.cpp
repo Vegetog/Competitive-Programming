@@ -32,6 +32,7 @@ bool isprime(int n){//***判断是否为素数***
     }
     return true;
 }
+/*
 //***埃氏筛***
 bool st[N];
 ll primes[N];
@@ -69,7 +70,7 @@ void get_primes(int n)
     }
     cnt--;
 }
-
+*/
 void solve()
 {
 	
