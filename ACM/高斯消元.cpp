@@ -2,9 +2,7 @@
 #ifndef ONLINE_JUDGE
 #include "_my_utils.h"
 #endif
-
 #define int long long
-#define new _MY_NEW_
 
 using namespace std;
 using ll = long long;

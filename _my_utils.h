@@ -24,15 +24,31 @@ inline int my_lg(T n) {
 #include <vector>
 // #include <multiset>
 
+#define SP std::cout << " ";
 #define EL std::cout << "\n";
 #define SE std::cout << "--------------------------------\n";
 #define COUT(ITEM) std::cout << #ITEM << "=" << ITEM << '\n';
+#define COUTS(ITEM) std::cout << #ITEM << "=" << ITEM << ' ';
+#define COUTE(ITEM) std::cout << #ITEM << "=" << ITEM << '\n';
 #define CERR(ITEM) std::cerr << #ITEM << "=" << ITEM << '\n';
+#define CERRS(ITEM) std::cerr << #ITEM << "=" << ITEM << ' ';
+#define CERRE(ITEM) std::cerr << #ITEM << "=" << ITEM << '\n';
 
 std::mt19937_64 rng(
-    std::chrono::steady_clock::now().time_since_epoch().count());
+    std::chrono::steady_clock::now().time_since_epoch().count()
+);
+
+template <class T>
+void shuffle(typename std::vector<T>::iterator first, typename std::vector<T>::iterator last) {
+    std::shuffle(first, last, rng);
+}
 
 using ll = long long;
+
+template <class K, class V>
+void debug(const std::pair<K, V>& p) {
+    std::cout << p.first << " " << p.second << "\n";
+}
 
 template <class T>
 void debug(const std::vector<T>& v) {
@@ -40,8 +56,28 @@ void debug(const std::vector<T>& v) {
     std::cout << "\n";
 }
 
-template <>
-void debug(const std::vector<std::array<ll, 2>>& v) {
+template <class T>
+void debug(const std::vector<std::array<T, 2>>& v) {
+    for (const auto& [x1, x2] : v) std::cout << x1 << " " << x2 << "\n";
+}
+
+template <class T>
+void debug(const std::vector<std::array<T, 3>>& v) {
+    for (const auto& [x1, x2] : v) std::cout << x1 << " " << x2 << "\n";
+}
+
+template <class T>
+void debug(const std::vector<std::array<T, 4>>& v) {
+    for (const auto& [x1, x2] : v) std::cout << x1 << " " << x2 << "\n";
+}
+
+template <class T>
+void debug(const std::vector<std::array<T, 5>>& v) {
+    for (const auto& [x1, x2] : v) std::cout << x1 << " " << x2 << "\n";
+}
+
+template <class K, class V>
+void debug(const std::vector<std::pair<K, V>>& v) {
     for (const auto& [x1, x2] : v) std::cout << x1 << " " << x2 << "\n";
 }
 

@@ -10,6 +10,7 @@ using PII = std::pair<int, int>;
 
 constexpr ll INF = 2E18 + 10;
 constexpr int N = 2E6 + 10;
+// struct CMP{bool operator()(const int & x, const int &y) const{ return x<y; }};
 
 void SINGLE_TEST() 
 {
