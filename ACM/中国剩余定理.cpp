@@ -38,6 +38,7 @@ T exgcd(T a, T b, T &x, T &y) {  // ax+by=gcd(a,b)
 }
 // x=a[i]%r[i]
 // x=a[j]%r[j]
+// r[i]、r[j]两两互质
 ll CRT(int n,vector<ll> &a,vector<ll> &r){
     __int128_t ms = 1, ans = 0;
     for (int i = 1; i <= n; i++) ms = ms * r[i];

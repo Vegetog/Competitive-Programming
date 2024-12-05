@@ -186,14 +186,14 @@ inline int my_lg(T n) {
 #define CERRS(ITEM) std::cerr << #ITEM << "=" << ITEM << ' ';
 #define CERRE(ITEM) std::cerr << #ITEM << "=" << ITEM << '\n';
 
-// std::mt19937_64 rng(
-//     std::chrono::steady_clock::now().time_since_epoch().count()
-// );
+std::mt19937_64 rng(
+    std::chrono::steady_clock::now().time_since_epoch().count()
+);
 
-// template <class T>
-// void shuffle(typename std::vector<T>::iterator first, typename std::vector<T>::iterator last) {
-//     std::shuffle(first, last, rng);
-// }
+template <class T>
+void shuffle(typename std::vector<T>::iterator first, typename std::vector<T>::iterator last) {
+    std::shuffle(first, last, rng);
+}
 
 using ll = long long;
 

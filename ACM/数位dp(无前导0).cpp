@@ -27,7 +27,7 @@ void SINGLE_TEST()
 
     function<ll(int,bool,int,int)> dfs=[&](int u,bool high,int sum,int n)->ll{
         if(sum>st) return 0;
-        if(u==s.size()) return (sum==st && n==0);
+        if(u==s.size()) return (sum==st && n==0); // return 1
         if(!high && f[u][sum][n]!=-1) return f[u][sum][n]; // 需要确定一个对后面来说唯一的状态
         int l=0,r=high ? s[u]-'0' : 9;
         ll res=0;
