@@ -550,5 +550,41 @@
             "}"
         ],
         "description": "Linear Sieve to find all primes up to n"
-    }
+    },
+    "Big Integer": {
+        "scope": "c,cpp",
+        "prefix": "LG",
+        "body": [
+            "namespace LG{",
+            "    using ull = unsigned long long;",
+            "    using i128 = __int128_t;",
+            "    using u128 = __uint128_t;",
+            "};",
+            "using namespace LG;"
+        ],
+        "description": "Larger Integer than long long"
+    },
+    "P3": {
+        "scope": "c,cpp",
+        "prefix": "P3",
+        "body": [
+            "struct P3 {",
+            "    int first, second, third;",
+            "    auto operator<=>(const P3&) const = default; // C++20",
+            "};"
+        ],
+        "description": "pair of 3 elements" 
+    },
+    "CMP": {
+        "scope": "c,cpp",
+        "prefix": "CMP",
+        "body": [
+            "struct CMP {",
+            "    bool operator()(const auto &x, const auto &y) const { ",
+            "        return x < y;",
+            "    }",
+            "};"
+        ],
+        "description": "Custom Comparator" 
+    },
 }

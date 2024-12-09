@@ -4,8 +4,12 @@
 #include <bits/stdc++.h>
 #endif
 #define int long long
-// struct CMP {bool operator()(const auto & x, const auto &y) const{ return x<y; }};
-constexpr int N = (int)2E6 + 10, INF = (int)2E18 + 10;using namespace std;using ll = long long;using ull = unsigned long long; using i128 = __int128_t; using u128 = __uint128_t; using P2 = pair<int, int>; struct P3 {int first, second, third; auto operator<=>(const P3&) const = default;}; // C++20
+
+using namespace std;
+using ll = long long;
+using P2 = pair<int, int>;
+
+constexpr int N = (int)2E6 + 10, INF = (int)2E18 + 10;
 
 void SINGLE_TEST() 
 {
