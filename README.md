@@ -1,2 +1,2 @@
-# C++ Visual Studio Code Configuration for Competitive-Programming
+C++ Visual Studio Code(macOS) Configuration for Competitive-Programming
 
