@@ -1,5 +1,5 @@
 #ifndef ONLINE_JUDGE
-#include "_my_utils.h"
+#include "QwQ"
 #else
 #include <bits/stdc++.h>
 #endif
@@ -9,9 +9,9 @@ using namespace std;
 using ll = long long;
 using P2 = pair<int, int>;
 
-constexpr int N = (int)2E6 + 10, INF = (int)2E18 + 10;
+constexpr ll N = (int)2E6 + 10, INF = (ll)2E18 + 10;
 
-void SINGLE_TEST() 
+void SINGLE_TEST(int CUR) 
 {
     
 }
@@ -19,10 +19,11 @@ void SINGLE_TEST()
 signed main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr), cout.tie(nullptr);
-    // INIT();
+    cout << fixed << setprecision(15);
+
     int SAMPLES = 1;
     cin >> SAMPLES;
     for (int CUR = 1; CUR <= SAMPLES; CUR++) {
-        SINGLE_TEST();
+        SINGLE_TEST(CUR);
     }
 }
