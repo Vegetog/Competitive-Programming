@@ -1,5 +1,5 @@
 #ifndef ONLINE_JUDGE
-#include "QwQ"
+#include "QwQ" 
 #else
 #include <bits/stdc++.h>
 #endif
