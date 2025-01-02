@@ -124,18 +124,7 @@
 #include <version>
 #endif
 
-
-#ifdef __clang__
-
-template <typename T>
-inline int my_lg(T n) {
-    return (n > 0) ? static_cast<int>(std::log2(n)) : -1;
-}
-
-#define __lg my_lg
-#define __gcd std::gcd
-
-#endif  // __clang__
+using ll = long long;
 
 #define SP std::cout << " ";
 #define EL std::cout << "\n";
@@ -147,6 +136,13 @@ inline int my_lg(T n) {
 #define CERRS(ITEM) std::cerr << #ITEM << "=" << ITEM << ' ';
 #define CERRE(ITEM) std::cerr << #ITEM << "=" << ITEM << '\n';
 
+#ifdef __clang__
+template <typename T>
+inline int my_lg(T n) {assert(n > 0); return (ll)log2(n);}
+#define __lg my_lg
+#define __gcd std::gcd
+#endif  // __clang__
+
 std::mt19937_64 rng(
     std::chrono::steady_clock::now().time_since_epoch().count()
 );
@@ -155,8 +151,6 @@ template <class T>
 void shuffle(typename std::vector<T>::iterator first, typename std::vector<T>::iterator last) {
     std::shuffle(first, last, rng);
 }
-
-using ll = long long;
 
 template <class K, class V>
 void debug(const std::pair<K, V>& p) {
