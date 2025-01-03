@@ -11,7 +11,7 @@ using P2 = pair<int, int>;
 
 constexpr ll N = (int)2E6 + 10, INF = (ll)2E18 + 10;
 
-void SINGLE_TEST(int CUR) 
+void SINGLE_TEST(int &CUR) 
 {
     
 }
