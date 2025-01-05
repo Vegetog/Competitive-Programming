@@ -7,7 +7,6 @@
 
 using namespace std;
 using ll = long long;
-using P2 = pair<int, int>;
 
 constexpr ll N = (int)2E6 + 10, INF = (ll)2E18 + 10;
 
