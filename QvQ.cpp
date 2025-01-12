@@ -6,7 +6,8 @@
 #define int long long
 
 using namespace std;
-using ll = long long;
+using ll = long long; 
+using ull = unsigned long long;
 
 constexpr ll N = (int)2E6 + 10, INF = (ll)2E18 + 10;
 
