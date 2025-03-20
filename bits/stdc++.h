@@ -143,7 +143,7 @@ template <typename T>
 inline int my_lg(T n) {assert(n > 0); return (ll)log2(n);}
 #define __lg my_lg
 #define __gcd std::gcd
-#endif  // __clang__
+#endif  
 
 //------------------integer simplification------------------//
 using i32 = int32_t;

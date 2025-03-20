@@ -13,7 +13,19 @@ constexpr ll N = (int)2E6 + 10, INF = (ll)2E18 + 10;
 
 void SINGLE_TEST(int &CUR) 
 {
-    
+    int n;
+    cin>>n;
+    vector<int> b(n+1);
+    for(int i=1;i<=n-2;i++){
+        cin>>b[i];
+    }
+    for(int i=1;i+2<=n;i++){
+        if(b[i]==1&&b[i+1]==0&&b[i+2]==1){
+            cout<<"NO\n";
+            return ;
+        }
+    }
+    cout<<"YES\n";
 }
 
 signed main() {
