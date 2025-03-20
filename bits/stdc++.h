@@ -1,5 +1,5 @@
-#ifndef QwQ // https://github.com/Vegetog/Competitive-Programming/blob/main/QwQ
-#define QwQ
+#ifndef STDCXX_H
+#define STDCXX_H
 
 //------------------header files------------------//
 // 17.4.1.2 Headers
@@ -289,4 +289,4 @@ void debug(const std::multiset<T, std::greater<>>& v) {
     std::cout << "\n";
 }
 
-#endif  // QwQ
+#endif  // STDCXX_H
