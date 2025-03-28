@@ -1,4 +1,4 @@
-#include "bits/stdc++.h" // https://github.com/Vegetog/Competitive-Programming/blob/main/bits/stdc%2B%2B.h
+#include "bits/stdc++.h"  // https://github.com/Vegetog/Competitive-Programming/blob/main/bits/stdc%2B%2B.h
 using namespace std;
 #define int long long
 
@@ -7,14 +7,14 @@ using pii = pair<int, int>;
 
 constexpr i64 N = 2E6 + 10, INF = 2E18 + 10;
 
-void Gura() 
+void Gura()
 {
-    
+
 }
 
 signed main() {
     ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+    cin.tie(nullptr), cout.tie(nullptr);
 
     int Gawr = 1;
     cin >> Gawr;
