@@ -1,4 +1,4 @@
-#include "bits/stdc++.h"  // https://github.com/Vegetog/Competitive-Programming/blob/main/bits/stdc%2B%2B.h
+#include "bits/stdc++.h" 
 using namespace std;
 #define int long long
 
@@ -9,7 +9,7 @@ constexpr i64 N = 2E6 + 10, INF = 2E18 + 10;
 
 void Gura()
 {
-
+    
 }
 
 signed main() {
