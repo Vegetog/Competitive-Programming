@@ -1,11 +1,16 @@
 #include "bits/stdc++.h" 
 using namespace std;
+#define x1 X1
+#define x2 X2
+#define y1 Y1
+#define y2 Y2
 #define int long long
+#define size(c) static_cast<int>((c).size())
 
 using i64 = long long;
 using pii = pair<int, int>;
 
-constexpr int B = 30, N = 2E6 + 10, inf32 = 1E9 + 10;
+constexpr int B = 30, N = 2E6 + 10, mod = 998244353, inf32 = 1E9 + 10;
 constexpr i64 inf = 2E18 + 10;
 
 void Gura()
