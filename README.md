@@ -1,2 +1,2 @@
-**Visual Studio Code (C++)** for competitive program on **macOS**
+**Visual Studio Code (C++)** for Competitive Program on **macOS**
 
