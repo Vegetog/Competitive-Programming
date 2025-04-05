@@ -1,8 +1,4 @@
 #include "bits/stdc++.h"
-#define x1 _x1
-#define x2 _x2
-#define y1 _y1
-#define y2 _y2
 #define int long long
 
 using u32 = unsigned;
@@ -157,7 +153,7 @@ constexpr i64 inf = 1E12 + 10, inf64 = 2E18 + 10;
 
 void Gura() 
 {
-    
+
 }
 
 signed main() {
