@@ -1,13 +1,4 @@
 #include "bits/stdc++.h"
-#define int long long
-
-using u32 = unsigned;
-using i64 = long long;
-using u64 = unsigned long long;
-using i128 = __int128;
-using u128 = unsigned __int128;
-using pii = std::pair<int, int>;
-
 using std::cerr;
 using std::cin;
 using std::cout;
@@ -52,8 +43,6 @@ using std::string;
 using std::string_view;
 using std::to_string;
 
-// using std::min;
-// using std::max;
 using std::accumulate;
 using std::binary_search;
 using std::count;
@@ -111,17 +100,18 @@ using fs::path;
 using std::apply;
 using std::clamp;
 using std::exclusive_scan;
-using std::gcd;
 using std::inclusive_scan;
 using std::invoke;
-using std::lcm;
 using std::reduce;
 using std::scoped_lock;
 #endif
 
+// using std::min;
+// using std::max;
+
 template <typename C>
 inline int size(const C &x) {
-    return static_cast<int>(x.size());
+    return static_cast<int>(std::size(x));
 }
 template <typename T, typename U>
 inline auto max(const T &a, const U &b) -> decltype(a > b ? a : b) {
@@ -148,7 +138,16 @@ inline auto min(const T &a, const U &b, const V &c, const W &d) {
     return min(min(a, b), min(c, d));
 }
 
-constexpr int B = 30, N = 1E6 + 10, mod = 998244353, inf32 = 1E9 + 10;
+#define int long long
+
+using u32 = unsigned;
+using i64 = long long;
+using u64 = unsigned long long;
+using i128 = __int128;
+using u128 = unsigned __int128;
+using pii = std::pair<int, int>;
+
+constexpr int B32 = 30, B64 = 63, N = 1E6 + 10, mod = 998244353, inf32 = 1E9 + 10;
 constexpr i64 inf = 1E12 + 10, inf64 = 2E18 + 10;
 
 void Gura() 
