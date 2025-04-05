@@ -12,112 +12,116 @@ using i128 = __int128;
 using u128 = unsigned __int128;
 using pii = std::pair<int, int>;
 
-// 基本输入输出
+using std::cerr;
 using std::cin;
 using std::cout;
-using std::cerr;
 using std::endl;
-using std::ios;
-using std::setprecision;
 using std::fixed;
-using std::scientific;
-using std::setw;
-using std::setfill;
+using std::flush;
+using std::getline;
+using std::ios;
 using std::left;
 using std::right;
-using std::flush;
+using std::scientific;
+using std::setfill;
+using std::setprecision;
+using std::setw;
 using std::ws;
-using std::getline;
 
-// 容器
-using std::vector;
-using std::deque;
-using std::list;
-using std::set;
-using std::map;
-using std::multiset;
-using std::multimap;
-using std::unordered_set;
-using std::unordered_map;
-using std::unordered_multiset;
-using std::unordered_multimap;
 using std::array;
 using std::bitset;
-using std::stack;
-using std::queue;
-using std::priority_queue;
+using std::deque;
 using std::forward_list;
+using std::list;
+using std::map;
+using std::multimap;
+using std::multiset;
+using std::priority_queue;
+using std::queue;
+using std::set;
+using std::stack;
+using std::unordered_map;
+using std::unordered_multimap;
+using std::unordered_multiset;
+using std::unordered_set;
+using std::vector;
 
-// 字符串
+using std::stod;
+using std::stof;
+using std::stoi;
+using std::stol;
+using std::stold;
+using std::stoll;
 using std::string;
 using std::string_view;
 using std::to_string;
-using std::stoi;
-using std::stol;
-using std::stoll;
-using std::stof;
-using std::stod;
-using std::stold;
 
-// 算法
 // using std::min;
 // using std::max;
-using std::sort;
-using std::stable_sort;
+using std::accumulate;
 using std::binary_search;
-using std::find;
 using std::count;
+using std::find;
 using std::lower_bound;
-using std::upper_bound;
-using std::reverse;
-using std::rotate;
-using std::unique;
 using std::next_permutation;
 using std::prev_permutation;
+using std::reverse;
+using std::rotate;
 using std::shuffle;
-using std::accumulate;
+using std::sort;
+using std::stable_sort;
 using std::transform;
+using std::unique;
+using std::upper_bound;
 
-// 实用工具
-using std::pair;
-using std::tuple;
+using std::cref;
+using std::forward;
+using std::get;
 using std::make_pair;
 using std::make_tuple;
-using std::tie;
-using std::get;
-using std::swap;
 using std::move;
-using std::forward;
+using std::pair;
 using std::ref;
-using std::cref;
+using std::swap;
+using std::tie;
+using std::tuple;
 
-// 数值计算
-using std::complex;
 using std::abs;
+using std::complex;
 using std::gcd;
 using std::lcm;
 
-// 函数对象
+using std::equal_to;
 using std::function;
+using std::greater;
 using std::hash;
 using std::less;
-using std::greater;
-using std::equal_to;
 
-// 异常和断言
 using std::exception;
 using std::runtime_error;
 
-// 文件IO
+using std::fstream;
 using std::ifstream;
 using std::ofstream;
-using std::fstream;
 
-// C++17以上的特性
-using std::optional;
-using std::variant;
+#if __cplusplus >= 201703L  // C++17
 using std::any;
-using std::filesystem::path;
+using std::byte;
+using std::optional;
+using std::string_view;
+using std::variant;
+namespace fs = std::filesystem;
+using fs::path;
+using std::apply;
+using std::clamp;
+using std::exclusive_scan;
+using std::gcd;
+using std::inclusive_scan;
+using std::invoke;
+using std::lcm;
+using std::reduce;
+using std::scoped_lock;
+#endif
 
 template <typename C>
 inline int size(const C &x) {
@@ -150,7 +154,6 @@ inline auto min(const T &a, const U &b, const V &c, const W &d) {
 
 constexpr int B = 30, N = 1E6 + 10, mod = 998244353, inf32 = 1E9 + 10;
 constexpr i64 inf = 1E12 + 10, inf64 = 2E18 + 10;
-
 
 void Gura() 
 {
