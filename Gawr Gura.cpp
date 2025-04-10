@@ -32,6 +32,8 @@ using std::unordered_multimap;
 using std::unordered_multiset;
 using std::unordered_set;
 using std::vector;
+using std::pair;
+using std::tuple;
 
 using std::stod;
 using std::stof;
@@ -75,6 +77,15 @@ using std::abs;
 using std::complex;
 using std::gcd;
 using std::lcm;
+using std::sqrt;
+using std::log;
+using std::log2;
+using std::log10;
+using std::exp;
+using std::pow;
+using std::sin;
+using std::cos;
+using std::tan;
 
 using std::equal_to;
 using std::function;
@@ -143,6 +154,44 @@ using i64 = long long;
 using u64 = unsigned long long;
 using i128 = __int128;
 using u128 = unsigned __int128;
+
+std::ostream& operator<<(std::ostream& os, const i128& value) { 
+    if (value == 0) return os << '0';
+    i128 temp = value;
+    if (temp < 0) {
+        os << '-';
+        temp = -temp;
+    }
+    char buffer[40];
+    int pos = 0;
+    while (temp > 0) {
+        buffer[pos++] = '0' + (temp % 10);
+        temp /= 10;
+    }
+    for (int i = pos - 1; i >= 0; --i) {
+        os << buffer[i];
+    }
+    return os;
+}
+
+std::istream& operator>>(std::istream& is, i128& value) {
+    std::string str;
+    is >> str;
+    value = 0;
+    bool negative = false;
+    size_t start = 0;
+    if (str[0] == '-') {
+        negative = true;
+        start = 1;
+    }
+    for (size_t i = start; i < str.size(); ++i) {
+        value = value * 10 + (str[i] - '0');
+    }
+    if (negative) {
+        value = -value;
+    }
+    return is;
+}
 
 #undef int
 template <class T>
@@ -414,35 +463,330 @@ struct DynModInt {
 template <u32 Id>
 Barrett DynModInt<Id>::bt = 998244353;
 
-using DM = DynModInt<0>;
-using Z = ModInt<998244353>;
-// using Z = ModInt<(int)1E9+7>;
+template <typename T>
+struct Comb {
+    std::vector<T> fac, invfac;
+    
+    Comb() {}
+    Comb(int n) {
+        init(n);
+    }
+    
+    void init(int n) {
+        fac.assign(n + 1, 0);
+        invfac.assign(n + 1, 0);
+        fac[0] = invfac[0] = 1;
+        for (int i = 1; i <= n; i++) fac[i] = fac[i - 1] * i;
+        invfac[n] = fac[n].inv();
+        for (int i = n - 1; i; i--) invfac[i] = invfac[i + 1] * (i + 1);
+    }
+    
+    // 排列数：A(n,k) = n!/(n-k)!
+    inline T A(int a, int b) const {
+        if (a < 0 || b < 0 || a < b) return 0;
+        return fac[a] * invfac[a - b];
+    }
+    
+    // 组合数：C(n,k) = n!/[k!(n-k)!]
+    inline T C(int a, int b) const {
+        if (a < 0 || b < 0 || a < b) return 0;
+        return fac[a] * invfac[b] * invfac[a - b];
+    }
+};
 
-vector<Z> fac,invfac;
-void init_combination(int n) {
-    fac.assign(n + 1, 0);
-    invfac.assign(n + 1, 0);
-    fac[0] = invfac[0] = 1;
-    for (int i = 1; i <= n; i++) fac[i] = fac[i - 1] * i;
-    invfac[n] = fac[n].inv();
-    for (int i = n - 1; i; i--) invfac[i] = invfac[i + 1] * (i + 1);
-}
-inline Z A(int a, int b) {
-    if (a < 0 || b < 0 || a < b) return 0;
-    return fac[a] * invfac[a - b];
-}
-inline Z C(int a, int b) {
-    if (a < 0 || b < 0 || a < b) return 0;
-    return fac[a] * invfac[b] * invfac[a - b];
-}
+using DM = DynModInt<0>;
+using Z9 = ModInt<998244353>;
+using Z1 = ModInt<1000000007>;
 
 #define int long long
+
 using pii = std::pair<int, int>;
 
-constexpr int B32 = 30, B64 = 63, N = 1E6 + 10, mod = 998244353, inf32 = 1E9 + 10;
+struct DSU {
+    std::vector<int> f, siz;
+    DSU(int n) : f(n), siz(n, 1) { std::iota(f.begin(), f.end(), 0); }
+    int find(int x) {
+        while (x != f[x]) x = f[x] = f[f[x]];
+        return x;
+    }
+    bool same(int x, int y) { return find(x) == find(y); }
+    bool merge(int x, int y) {
+        x = find(x); y = find(y);
+        if (x == y) return false;
+        siz[x] += siz[y];
+        f[y] = x;
+        return true;
+    }
+    int size(int x) { return siz[find(x)]; }
+};
+
+template<class Info>
+struct SegmentTree {
+    int n;
+    std::vector<Info> info;
+    SegmentTree() : n(0) {}
+    SegmentTree(int n_, Info v_ = Info()) {
+        init(n_, v_);
+    }
+    template<class T>
+    SegmentTree(std::vector<T> init_) {
+        init(init_);
+    }
+    void init(int n_, Info v_ = Info()) {
+        init(std::vector(n_, v_));
+    }
+    template<class T>
+    void init(std::vector<T> init_) {
+        n = init_.size();
+        info.assign(4 << (int)log(n), Info());
+        std::function<void(int, int, int)> build = [&](int p, int l, int r) {
+            if (r - l == 1) {
+                info[p] = init_[l];
+                return;
+            }
+            int m = (l + r) / 2;
+            build(2 * p, l, m);
+            build(2 * p + 1, m, r);
+            pull(p);
+        };
+        build(1, 0, n);
+    }
+    void pull(int p) {
+        info[p] = info[2 * p] + info[2 * p + 1];
+    }
+    void modify(int p, int l, int r, int x, const Info &v) {
+        if (r - l == 1) {
+            info[p] = v;
+            return;
+        }
+        int m = (l + r) / 2;
+        if (x < m) {
+            modify(2 * p, l, m, x, v);
+        } else {
+            modify(2 * p + 1, m, r, x, v);
+        }
+        pull(p);
+    }
+    void modify(int p, const Info &v) {
+        modify(1, 0, n, p, v);
+    }
+    Info rangeQuery(int p, int l, int r, int x, int y) {
+        if (l >= y || r <= x) {
+            return Info();
+        }
+        if (l >= x && r <= y) {
+            return info[p];
+        }
+        int m = (l + r) / 2;
+        return rangeQuery(2 * p, l, m, x, y) + rangeQuery(2 * p + 1, m, r, x, y);
+    }
+    Info rangeQuery(int l, int r) {
+        return rangeQuery(1, 0, n, l, r);
+    }
+    template<class F>
+    int findFirst(int p, int l, int r, int x, int y, F pred) {
+        if (l >= y || r <= x || !pred(info[p])) {
+            return -1;
+        }
+        if (r - l == 1) {
+            return l;
+        }
+        int m = (l + r) / 2;
+        int res = findFirst(2 * p, l, m, x, y, pred);
+        if (res == -1) {
+            res = findFirst(2 * p + 1, m, r, x, y, pred);
+        }
+        return res;
+    }
+    template<class F>
+    int findFirst(int l, int r, F pred) {
+        return findFirst(1, 0, n, l, r, pred);
+    }
+    template<class F>
+    int findLast(int p, int l, int r, int x, int y, F pred) {
+        if (l >= y || r <= x || !pred(info[p])) {
+            return -1;
+        }
+        if (r - l == 1) {
+            return l;
+        }
+        int m = (l + r) / 2;
+        int res = findLast(2 * p + 1, m, r, x, y, pred);
+        if (res == -1) {
+            res = findLast(2 * p, l, m, x, y, pred);
+        }
+        return res;
+    }
+    template<class F>
+    int findLast(int l, int r, F pred) {
+        return findLast(1, 0, n, l, r, pred);
+    }
+};
+
+template <class Info, class Tag>
+struct LazySegmentTree {
+    int n;
+    std::vector<Info> info;
+    std::vector<Tag> tag;
+    LazySegmentTree() : n(0) {}
+    LazySegmentTree(int n_, Info v_ = Info()) { init(n_, v_); }
+    template <class T>
+    LazySegmentTree(std::vector<T> init_) {
+        init(init_);
+    }
+    void init(int n_, Info v_ = Info()) { init(std::vector(n_, v_)); }
+    template <class T>
+    void init(std::vector<T> init_) {
+        n = init_.size();
+        info.assign(4 << (int)log(n), Info());
+        tag.assign(4 << (int)log(n), Tag());
+        std::function<void(int, int, int)> build = [&](int p, int l, int r) {
+            if (r - l == 1) {
+                info[p] = init_[l];
+                return;
+            }
+            int m = (l + r) / 2;
+            build(2 * p, l, m);
+            build(2 * p + 1, m, r);
+            pull(p);
+        };
+        build(1, 0, n);
+    }
+    void pull(int p) { info[p] = info[2 * p] + info[2 * p + 1]; }
+    void apply(int p, const Tag &v) {
+        info[p].apply(v);
+        tag[p].apply(v);
+    }
+    void push(int p) {
+        apply(2 * p, tag[p]);
+        apply(2 * p + 1, tag[p]);
+        tag[p] = Tag();
+    }
+    void modify(int p, int l, int r, int x, const Info &v) {
+        if (r - l == 1) {
+            info[p] = v;
+            return;
+        }
+        int m = (l + r) / 2;
+        push(p);
+        if (x < m) {
+            modify(2 * p, l, m, x, v);
+        } else {
+            modify(2 * p + 1, m, r, x, v);
+        }
+        pull(p);
+    }
+    void modify(int p, const Info &v) { modify(1, 0, n, p, v); }
+    Info rangeQuery(int p, int l, int r, int x, int y) {
+        if (l >= y || r <= x) {
+            return Info();
+        }
+        if (l >= x && r <= y) {
+            return info[p];
+        }
+        int m = (l + r) / 2;
+        push(p);
+        return rangeQuery(2 * p, l, m, x, y) +
+               rangeQuery(2 * p + 1, m, r, x, y);
+    }
+    Info rangeQuery(int l, int r) { return rangeQuery(1, 0, n, l, r); }
+    void rangeApply(int p, int l, int r, int x, int y, const Tag &v) {
+        if (l >= y || r <= x) {
+            return;
+        }
+        if (l >= x && r <= y) {
+            apply(p, v);
+            return;
+        }
+        int m = (l + r) / 2;
+        push(p);
+        rangeApply(2 * p, l, m, x, y, v);
+        rangeApply(2 * p + 1, m, r, x, y, v);
+        pull(p);
+    }
+    void rangeApply(int l, int r, const Tag &v) {
+        return rangeApply(1, 0, n, l, r, v);
+    }
+    template <class F>
+    int findFirst(int p, int l, int r, int x, int y, F pred) {
+        if (l >= y || r <= x || !pred(info[p])) {
+            return -1;
+        }
+        if (r - l == 1) {
+            return l;
+        }
+        int m = (l + r) / 2;
+        push(p);
+        int res = findFirst(2 * p, l, m, x, y, pred);
+        if (res == -1) {
+            res = findFirst(2 * p + 1, m, r, x, y, pred);
+        }
+        return res;
+    }
+    template <class F>
+    int findFirst(int l, int r, F pred) {
+        return findFirst(1, 0, n, l, r, pred);
+    }
+    template <class F>
+    int findLast(int p, int l, int r, int x, int y, F pred) {
+        if (l >= y || r <= x || !pred(info[p])) {
+            return -1;
+        }
+        if (r - l == 1) {
+            return l;
+        }
+        int m = (l + r) / 2;
+        push(p);
+        int res = findLast(2 * p + 1, m, r, x, y, pred);
+        if (res == -1) {
+            res = findLast(2 * p, l, m, x, y, pred);
+        }
+        return res;
+    }
+    template <class F>
+    int findLast(int l, int r, F pred) {
+        return findLast(1, 0, n, l, r, pred);
+    }
+};
+
+constexpr int B32 = 30, B64 = 63, inf32 = 1E9 + 10;
 constexpr i64 inf = 1E12 + 10, inf64 = 2E18 + 10;
 
-void Gura() 
+std::mt19937_64 rng(std::chrono::steady_clock::now().time_since_epoch().count());
+
+constexpr int N = 2E6 + 10, M = 5E6 + 10, mod = 998244353;
+
+struct Tag {
+    int add = 0;
+    void apply(Tag t) {  // 两个懒标记结合
+        add += t.add;
+    }
+};
+
+struct Info {
+    int sum = 0;
+    int len = 1;
+    int mx = -inf64;
+    int mn = inf64;
+    void apply(Tag t) {  // 懒标记作用到信息上
+        sum += t.add * len;
+        mx += t.add;
+        mn += t.add;
+    }
+};
+Info operator+(Info a, Info b) {
+    Info c;
+    c.sum = a.sum + b.sum;
+    c.len = a.len + b.len;
+    c.mx = max(a.mx, b.mx);
+    c.mn = min(a.mn, b.mn);
+    return c;
+}
+
+// using Z = Z9;
+// Comb<Z> comb(N);
+
+void Gura(int &_turn) 
 {
     
 }
@@ -451,13 +795,11 @@ signed main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr), cout.tie(nullptr);
     cout << fixed << setprecision(10);
-
-    // init_combination(N);
     
     int Gawr = 1;
     cin >> Gawr;
     for (int _i = 1; _i <= Gawr; _i++) {
-        Gura();
+        Gura(_i);
     }
 
     return 0;

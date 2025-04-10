@@ -114,51 +114,25 @@ struct MInt {
         return lhs.val() != rhs.val();
     }
 };
-//-------------------------------------//
-template <>
-// int MInt<0>::Mod = 1E9+7;
-int MInt<0>::Mod = 998244353;
 
-template <int V, int P>
-constexpr MInt<P> CInv = MInt<P>(V).inv();
-
-// constexpr int P = 1E9+7;
 constexpr int P = 998244353;
 using Z = MInt<P>;
 
-constexpr int64_t INF = 2E18 + 10;
-constexpr int N = 2E6 + 10;
-//-------------------------------------//
-
-Z fac[N], invfac[N];
-
-void INIT() {
-    fac[0] = invfac[0] = 1;
-    for (int i = 1; i < N; i++) fac[i] = fac[i - 1] * i;
-    invfac[N - 1] = fac[N - 1].inv();
-    for (int i = N - 2; i; i--) invfac[i] = invfac[i + 1] * (i + 1);
-}
-inline Z A(int a, int b) {
-    if (a < 0 || b < 0 || a < b) return 0;
-    return fac[a] * invfac[a - b];
-}
-inline Z C(int a, int b) {
-    if (a < 0 || b < 0 || a < b) return 0;
-    return fac[a] * invfac[b] * invfac[a - b];
-}
-
-void SINGLE_TEST() 
+void Gura(int &_turn) 
 {
     
 }
 
-signed main(){
+signed main() {
     ios::sync_with_stdio(false);
-    cin.tie(nullptr),cout.tie(nullptr);
-    INIT();
-    int SAMPLES = 1;
-    cin >> SAMPLES;
-    for(int CUR=1;CUR<=SAMPLES;CUR++){
-        SINGLE_TEST();
+    cin.tie(nullptr), cout.tie(nullptr);
+    cout << fixed << setprecision(10);
+    
+    int Gawr = 1;
+    cin >> Gawr;
+    for (int _i = 1; _i <= Gawr; _i++) {
+        Gura(_i);
     }
+
+    return 0;
 }

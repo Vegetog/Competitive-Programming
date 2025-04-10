@@ -139,9 +139,9 @@ using ll = long long;
 
 //------------------fake g++ for clang------------------//
 #ifdef __clang__
-template <typename T>
-inline int my_lg(T n) {assert(n > 0); return (ll)log2(n);}
-#define __lg my_lg
+// template <typename T>
+// inline int my_lg(T n) {assert(n > 0); return (ll)log2(n);}
+// #define __lg my_lg
 #define __gcd std::gcd
 #endif  
 
@@ -153,53 +153,53 @@ using u64 = uint64_t;
 using i128 = __int128_t;
 using u128 = __uint128_t;
 
-std::ostream& operator<<(std::ostream& os, const i128& value) { 
-    if (value == 0) return os << '0';
-    i128 temp = value;
-    if (temp < 0) {
-        os << '-';
-        temp = -temp;
-    }
-    char buffer[40];
-    int pos = 0;
-    while (temp > 0) {
-        buffer[pos++] = '0' + (temp % 10);
-        temp /= 10;
-    }
-    for (int i = pos - 1; i >= 0; --i) {
-        os << buffer[i];
-    }
-    return os;
-}
+// std::ostream& operator<<(std::ostream& os, const i128& value) { 
+//     if (value == 0) return os << '0';
+//     i128 temp = value;
+//     if (temp < 0) {
+//         os << '-';
+//         temp = -temp;
+//     }
+//     char buffer[40];
+//     int pos = 0;
+//     while (temp > 0) {
+//         buffer[pos++] = '0' + (temp % 10);
+//         temp /= 10;
+//     }
+//     for (int i = pos - 1; i >= 0; --i) {
+//         os << buffer[i];
+//     }
+//     return os;
+// }
 
-std::istream& operator>>(std::istream& is, i128& value) {
-    std::string str;
-    is >> str;
-    value = 0;
-    bool negative = false;
-    size_t start = 0;
-    if (str[0] == '-') {
-        negative = true;
-        start = 1;
-    }
-    for (size_t i = start; i < str.size(); ++i) {
-        value = value * 10 + (str[i] - '0');
-    }
-    if (negative) {
-        value = -value;
-    }
-    return is;
-}
+// std::istream& operator>>(std::istream& is, i128& value) {
+//     std::string str;
+//     is >> str;
+//     value = 0;
+//     bool negative = false;
+//     size_t start = 0;
+//     if (str[0] == '-') {
+//         negative = true;
+//         start = 1;
+//     }
+//     for (size_t i = start; i < str.size(); ++i) {
+//         value = value * 10 + (str[i] - '0');
+//     }
+//     if (negative) {
+//         value = -value;
+//     }
+//     return is;
+// }
 
 //------------------random------------------//
-std::mt19937_64 rng(
-    std::chrono::steady_clock::now().time_since_epoch().count()
-);
+// std::mt19937_64 rng(
+//     std::chrono::steady_clock::now().time_since_epoch().count()
+// );
 
-template <class T>
-void shuffle(typename std::vector<T>::iterator first, typename std::vector<T>::iterator last) {
-    std::shuffle(first, last, rng);
-}
+// template <class T>
+// void shuffle(typename std::vector<T>::iterator first, typename std::vector<T>::iterator last) {
+//     std::shuffle(first, last, rng);
+// }
 
 //------------------debug for STL------------------//
 template <class K, class V>
