@@ -754,6 +754,8 @@ constexpr i64 inf = 1E12 + 10, inf64 = 2E18 + 10;
 
 std::mt19937_64 rng(std::chrono::steady_clock::now().time_since_epoch().count());
 
+#define print(x) cout << #x << " = " << (x) << "\n"
+
 constexpr int N = 2E6 + 10, M = 5E6 + 10, mod = 998244353;
 
 struct Tag {

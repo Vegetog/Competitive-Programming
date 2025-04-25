@@ -77,7 +77,8 @@
         "algorithm": "cpp",
         "version": "cpp",
         "memory": "cpp",
-        "print": "cpp"
+        "print": "cpp",
+        "iterator": "cpp"
     },
     "commentTranslate.hover.enabled": true,
     "C_Cpp.default.compilerPath": "/usr/bin/clang++"
