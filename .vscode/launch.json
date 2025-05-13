@@ -4,12 +4,22 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug",
+            "name": "Run_cpp",
             "terminal": "integrated",
             "program": "${workspaceFolder}/${fileBasenameNoExtension}",
             "args": [],
             "cwd": "${workspaceFolder}",
-            "preLaunchTask": "build" //调试前增加编译
-        }
+            "preLaunchTask": "build_cpp"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Run_C",
+            "terminal": "integrated",
+            "program": "${workspaceFolder}/${fileBasenameNoExtension}",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "preLaunchTask": "build_C"
+        },
     ]
 }

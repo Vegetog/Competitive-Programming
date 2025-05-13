@@ -1,13 +1,14 @@
 import sys
 from functools import lru_cache
 
-input = sys.stdin.readline  
-sys.setrecursionlimit(10 ** 9)  
+input = sys.stdin.readline
+sys.setrecursionlimit(10 ** 9)
 
-# @lru_cache(maxsize=None)
+@lru_cache(maxsize=None)
 
 def Gura():
-    pass
+    a, b = map(int, input().split())
+    print('a + b = ',a + b)
 
 
 if __name__ == '__main__':
