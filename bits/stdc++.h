@@ -139,9 +139,9 @@ using ll = long long;
 
 //------------------fake g++ for clang------------------//
 #ifdef __clang__
-// template <typename T>
-// inline int my_lg(T n) {assert(n > 0); return (ll)log2(n);}
-// #define __lg my_lg
+template <typename T>
+inline int my_lg(T n) {assert(n > 0); return (ll)log2(n);}
+#define __lg my_lg
 #define __gcd std::gcd
 #endif  
 
