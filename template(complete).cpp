@@ -3,17 +3,9 @@ using std::cerr;
 using std::cin;
 using std::cout;
 using std::endl;
-using std::fixed;
 using std::flush;
 using std::getline;
 using std::ios;
-using std::left;
-using std::right;
-using std::scientific;
-using std::setfill;
-using std::setprecision;
-using std::setw;
-using std::ws;
 
 using std::array;
 using std::bitset;
@@ -35,12 +27,6 @@ using std::vector;
 using std::pair;
 using std::tuple;
 
-using std::stod;
-using std::stof;
-using std::stoi;
-using std::stol;
-using std::stold;
-using std::stoll;
 using std::string;
 using std::string_view;
 using std::to_string;
@@ -61,17 +47,12 @@ using std::transform;
 using std::unique;
 using std::upper_bound;
 
-using std::cref;
 using std::forward;
 using std::get;
 using std::make_pair;
-using std::make_tuple;
 using std::move;
 using std::pair;
-using std::ref;
 using std::swap;
-using std::tie;
-using std::tuple;
 
 using std::abs;
 using std::complex;
@@ -92,30 +73,6 @@ using std::function;
 using std::greater;
 using std::hash;
 using std::less;
-
-using std::exception;
-using std::runtime_error;
-
-using std::fstream;
-using std::ifstream;
-using std::ofstream;
-
-#if __cplusplus >= 201703L  // C++17
-using std::any;
-using std::byte;
-using std::optional;
-using std::string_view;
-using std::variant;
-namespace fs = std::filesystem;
-using fs::path;
-using std::apply;
-using std::clamp;
-using std::exclusive_scan;
-using std::inclusive_scan;
-using std::invoke;
-using std::reduce;
-using std::scoped_lock;
-#endif
 
 // using std::min;
 // using std::max;
@@ -518,7 +475,7 @@ void Gura(int &_turn)
 signed main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr), cout.tie(nullptr);
-    cout << fixed << setprecision(10);
+    cout << std::fixed << std::setprecision(10);
     
     int Gawr = 1;
     cin >> Gawr;
