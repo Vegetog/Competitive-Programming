@@ -78,8 +78,13 @@
         "version": "cpp",
         "memory": "cpp",
         "print": "cpp",
-        "iterator": "cpp"
+        "iterator": "cpp",
+        "concepts": "cpp"
     },
     "commentTranslate.hover.enabled": true,
-    "C_Cpp.default.compilerPath": "/usr/bin/clang++"
+    "C_Cpp.default.compilerPath": "/usr/bin/clang++",
+    "python-envs.defaultEnvManager": "ms-python.python:conda",
+    "python-envs.defaultPackageManager": "ms-python.python:conda",
+    "python-envs.pythonProjects": [],
+    "editor.fontSize": 13
 }

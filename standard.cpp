@@ -1,24 +1,23 @@
 #include <bits/stdc++.h>
-#define int long long
+
 using namespace std;
 
 using i64 = long long;
 using pii = std::pair<int, int>;
 
-constexpr int N = 1e6 + 5, mod = 998244353;
-constexpr i64 inf = 2e18 + 5;
+constexpr int N = 1e6 + 5, inf = 1e9 + 5, mod = 998244353;
+constexpr i64 inf64 = 2e18 + 5;
 
 void solve() 
 {
     
 }
 
-signed main() {
+int main() {
     ios::sync_with_stdio(false);
-    cin.tie(nullptr), cout.tie(nullptr);
-    cout << fixed << setprecision(12);
+    cin.tie(nullptr);
 
-    int T = 1;
+    int T;
     cin >> T;
     while (T--) {
         solve();
