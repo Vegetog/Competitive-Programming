@@ -1,0 +1,7 @@
+[
+  {
+    "label": "build & run",
+    "command": "mkdir -p build && clang++ -g -std=c++23 \"$ZED_FILE\" -o \"build/$ZED_STEM\" && \"./build/$ZED_STEM\"",
+    "cwd": "$ZED_WORKTREE_ROOT",
+  },
+]

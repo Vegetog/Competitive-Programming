@@ -1,0 +1,16 @@
+[
+  {
+    "label": "Debug current file",
+    "build": {
+      "command": "/bin/zsh",
+      "args": [
+        "-c",
+        "mkdir -p build && clang++ -g -std=c++23 \"$ZED_FILE\" -o \"build/$ZED_STEM\"",
+      ],
+      "cwd": "$ZED_WORKTREE_ROOT",
+    },
+    "program": "$ZED_WORKTREE_ROOT/build/$ZED_STEM",
+    "request": "launch",
+    "adapter": "CodeLLDB",
+  },
+]
