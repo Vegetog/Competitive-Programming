@@ -2,12 +2,6 @@
 
 using namespace std;
 
-using i64 = long long;
-using pii = pair<int, int>;
-
-constexpr int N = 2e6 + 5, inf = 1e9 + 5, mod = 998244353;
-constexpr i64 inf64 = 2e18 + 5;
-
 void mergeSort(vector<int>& a, int l, int r) {
     if (l >= r) return;
     int mid = (l + r) / 2;

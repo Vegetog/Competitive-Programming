@@ -1,12 +1,8 @@
 #include "bits/stdc++.h"
-#define int long long
+
 using namespace std;
 
-using pii = pair<int, int>;
-
-constexpr int N = 2e6 + 5, inf = 2e18 + 5;
-
-void solve() {
+int main() {
     int n, m;
     string s, t;
     cin >> m >> t >> n >> s;
@@ -25,17 +21,5 @@ void solve() {
             cout << (i - m + 1) << " ";
             j = nxt[j - 1];
         }
-    }
-}
-
-signed main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr), cout.tie(nullptr);
-    cout << fixed << setprecision(12);
-
-    int T = 1;
-    // cin >> T;
-    while (T--) {
-        solve();
     }
 }

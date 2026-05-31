@@ -14,11 +14,11 @@ void add(int p, int v) {
 }
 int sum(int p) {
     int res = 0;
-    for (int i = p; i >= 1; i -= i & -i) res += t[i];
+    for (int i = p; i >= 1; i -= i & -i) res += t[i]; // 必须使用 1-indexed
     return res;
 }
 
-void solve() {
+int main() {
     int q;
     cin >> n >> q;
     for (int i = 1; i <= n; i++) {
@@ -37,17 +37,5 @@ void solve() {
             cin >> l >> r;
             cout << sum(r) - sum(l - 1) << "\n";
         }
-    }
-}
-
-signed main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr), cout.tie(nullptr);
-    cout << fixed << setprecision(12);
-
-    int T = 1;
-    // cin >> T;
-    while (T--) {
-        solve();
     }
 }

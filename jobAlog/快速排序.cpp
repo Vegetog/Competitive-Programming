@@ -2,12 +2,6 @@
 
 using namespace std;
 
-using i64 = long long;
-using pii = std::pair<int, int>;
-
-constexpr int N = 2e6 + 5, inf = 1e9 + 5, mod = 998244353;
-constexpr i64 inf64 = 2e18 + 5;
-
 void quicksort(vector<int>& a, int l, int r) {
     int sd = a[(l + r) / 2];
     int i = l, j = r;
