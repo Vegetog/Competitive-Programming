@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+"${CXX:-g++}" "$1" -std="${CPP_STD:-c++23}" -g -fsanitize=address,undefined -fno-omit-frame-pointer -o a.out && ./a.out

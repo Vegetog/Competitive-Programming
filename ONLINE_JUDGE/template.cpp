@@ -5,7 +5,15 @@
 #include <numeric>
 #include <vector>
 
+#ifndef ONLINE_JUDGE
+#include "../debug.hpp"
+#else
+namespace debug {}
+#define dbg(...) do { } while (false)
+#endif
+
 using namespace std;
+using namespace debug;
 
 using i64 = long long;
 using pii = std::pair<int, int>;

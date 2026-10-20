@@ -1,8 +1,11 @@
-#include "bits/stdc++.h"
+#include <iostream>
+#include <list>
+#include <unordered_map>
 
 using namespace std;
 
 class LRUCache {
+  public:
     int maxn;
     list<int> ls;
     unordered_map<int, list<int>::iterator> mp;
@@ -44,11 +47,11 @@ int main() {
     LRUCache cache = LRUCache(2);
     cache.put(1, 1);
     cache.put(2, 2);
-    cache.get(1);    // 返回 1
-    cache.put(3, 3); // 该操作会使得关键字 2 作废
-    cache.get(2);    // 返回 -1 (未找到)
-    cache.put(4, 4); // 该操作会使得关键字 1 作废
-    cache.get(1);    // 返回 -1 (未找到)
-    cache.get(3);    // 返回 3
-    cache.get(4);    // 返回 4
+    std::cout << cache.get(1) << "\n"; // 返回 1
+    cache.put(3, 3);                   // 该操作会使得关键字 2 作废
+    std::cout << cache.get(2) << "\n"; // 返回 -1 (未找到)
+    cache.put(4, 4);                   // 该操作会使得关键字 1 作废
+    std::cout << cache.get(1) << "\n"; // 返回 -1 (未找到)
+    std::cout << cache.get(3) << "\n"; // 返回 3
+    std::cout << cache.get(4) << "\n"; // 返回 4
 }
