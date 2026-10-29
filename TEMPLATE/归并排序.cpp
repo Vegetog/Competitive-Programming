@@ -1,37 +1,46 @@
-#include "bits/stdc++.h"
-#define int long long
+/*
+算法：归并排序
+简介：递归排序左右两半并稳定合并，同时返回逆序对个数。
+复杂度：时间 O(n log n)，空间 O(n)。
+约定：原地修改传入数组；逆序对要求 a[i] > a[j]，计数使用 i64。
+*/
+#include <algorithm>
+#include <functional>
+#include <iostream>
+#include <vector>
+
 using namespace std;
 
-using pii = std::pair<int, int>;
-constexpr int N = 2e6, inf = 2e18;
-
-long long merge_sort(vector<int>& a, int l, int r) { // [l,r)
-    if (r - l <= 1) return 0;
-    int m = (l + r) / 2;
-    long long ans = merge_sort(a, l, m) + merge_sort(a, m, r);
-
-    vector<int> t;
-    int i = l, j = m;
-    while (i < m && j < r) {
-        if (a[i] <= a[j]) t.push_back(a[i++]);
-        else {
-            ans += m - i;
-            t.push_back(a[j++]);
+// ==================== 算法模板 ====================
+using i64 = long long;
+template <class T> i64 merge_sort(vector<T>& values) {
+    int n = values.size();
+    vector<T> buffer(n);
+    function<i64(int, int)> sort_range = [&](int left, int right) -> i64 {
+        if (right - left <= 1) return 0;
+        int middle = left + (right - left) / 2;
+        i64 count = sort_range(left, middle) + sort_range(middle, right);
+        int i = left, j = middle, k = left;
+        while (i < middle && j < right) {
+            if (values[i] <= values[j])
+                buffer[k++] = values[i++];
+            else {
+                buffer[k++] = values[j++];
+                count += middle - i;
+            }
         }
-    }
-    while (i < m) t.push_back(a[i++]);
-    while (j < r) t.push_back(a[j++]);
-    copy(t.begin(), t.end(), a.begin() + l);
-    return ans;
+        while (i < middle) buffer[k++] = values[i++];
+        while (j < right) buffer[k++] = values[j++];
+        copy(buffer.begin() + left, buffer.begin() + right, values.begin() + left);
+        return count;
+    };
+    return sort_range(0, n);
 }
 
-signed main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-    vector<int> a(n);
-    for (auto& x : a) cin >> x;
-    cout << merge_sort(a, 0, n) << '\n';
+// ==================== 使用示例 ====================
+int main() {
+    vector<int> values{3, 1, 2};
+    cout << merge_sort(values) << '\n'; // 2
+    for (int value : values) cout << value << ' ';
+    cout << '\n'; // 1 2 3
 }

@@ -1,65 +1,57 @@
-#include<bits/stdc++.h>
+/*
+算法：最大异或对（01 Trie）
+简介：按二进制位建立字典树，每一位优先走与查询数相反的分支。
+复杂度：时间 O(32n)，空间 O(32n)。
+约定：使用 32 位无符号整数；空数组或只有一个数时返回 0。
+*/
+#include <algorithm>
+#include <array>
+#include <cstdint>
+#include <iostream>
+#include <vector>
+
 using namespace std;
-#define ll long long
-#define int long long
-#define INF (long long)2e+18
-const int N=2e6+10;
-const int mod=1e9;
-typedef pair<int,int> PII;
 
-int a[N];
-int son[N*31][2];
-int n,idx;
-
-void insert(int x)
-{
-    int p=0;
-    for(int i=31;i>=0;i--){
-        int t=x>>i&1;
-        if(!son[p][t]){
-            son[p][t]=++idx;// 新节点编号为 idx + 1
-        }
-        p=son[p][t];
-    }
-}
-int query(int x)
-{
-    int p=0;
-    int ret=0;
-    for(int i=31;i>=0;i--){
-        int t=x>>i&1;
-        if(son[p][!t]){
-            p=son[p][!t];
-            ret=ret*2+!t;
-        }else{
-            p=son[p][t];
-            ret=ret*2+t;
+// ==================== 算法模板 ====================
+struct BinaryTrie {
+    vector<array<int, 2>> next{{0, 0}};
+    void insert(uint32_t value) {
+        int node = 0;
+        for (int bit = 31; bit >= 0; bit--) {
+            int digit = (value >> bit) & 1;
+            if (next[node][digit] == 0) {
+                next[node][digit] = next.size();
+                next.push_back({0, 0});
+            }
+            node = next[node][digit];
         }
     }
-    ret=ret^x;
-    return ret;
-}
-void solve()
-{
-	int n;cin>>n;
-    for(int i=1;i<=n;i++){
-        cin>>a[i];
-        insert(a[i]);
+    uint32_t max_xor(uint32_t value) const {
+        if (next.size() == 1) return 0;
+        int node = 0;
+        uint32_t result = 0;
+        for (int bit = 31; bit >= 0; bit--) {
+            int digit = (value >> bit) & 1;
+            if (next[node][digit ^ 1] != 0) {
+                result |= uint32_t{1} << bit;
+                digit ^= 1;
+            }
+            node = next[node][digit];
+        }
+        return result;
     }
-    ll ans=0;
-    for(int i=1;i<=n;i++){
-        ans=max(ans,query(a[i]));
+};
+uint32_t maximum_xor_pair(const vector<uint32_t>& values) {
+    BinaryTrie trie;
+    uint32_t result = 0;
+    for (uint32_t value : values) {
+        result = max(result, trie.max_xor(value));
+        trie.insert(value);
     }
-    cout<<ans<<'\n';
+    return result;
 }
 
-signed main()
-{
-	ios::sync_with_stdio(false);
-    cin.tie(0),cout.tie(0);
-    int T=1;
-//	cin>>T;
-    while(T--){
-    	solve();
-	}
+// ==================== 使用示例 ====================
+int main() {
+    cout << maximum_xor_pair({3, 10, 5, 25, 2, 8}) << '\n'; // 28
 }

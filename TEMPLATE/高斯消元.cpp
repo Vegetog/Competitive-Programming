@@ -1,118 +1,52 @@
-#include <bits/stdc++.h>
-#ifndef ONLINE_JUDGE
-#include "_my_utils.h"
-#endif
-#define int long long
-
+/*
+算法：高斯消元
+简介：使用列主元消元，判断实数线性方程组无解、多解或唯一解。
+复杂度：时间 O(n³)，空间 O(n²)。
+约定：输入为 n×(n+1) 增广矩阵；返回 status = -1/0/1（无解/多解/唯一解）；仅唯一解时读取 solution。
+*/
+#include <algorithm>
+#include <cassert>
+#include <cmath>
+#include <iostream>
+#include <vector>
 using namespace std;
-using ll = long long;
-using PII = array<int, 2>;
 
-constexpr long long INF = 2E18 + 10;
-constexpr int N = 2E6 + 10;
+// ==================== 算法模板 ====================
+constexpr double kEpsilon = 1e-9;
 
-class GaussianElimination {
-public:
-    int n; // 方程组的个数（即变量的个数）
-    vector<vector<double>> A; // 系数矩阵（包含常数项）
-    vector<double> ans; // 解向量
-    const double eps = 1e-9; // 用于比较浮点数的精度
-
-    GaussianElimination(int size) : n(size), A(size, vector<double>(size + 1, 0)), ans(size, 0) {}
-
-    // 读取方程组
-    void readEquations() {
-        for (int i = 0; i < n; ++i) {
-            for (int j = 0; j <= n; ++j) {
-                cin >> A[i][j];
-            }
-        }
-    }
-
-    // 返回绝对值
-    double Abs(double x) {
-        return x < 0 ? -x : x;
-    }
-
-    // 判断两个浮点数是否相等
-    bool eq(double x, double y) {
-        return Abs(x - y) < eps;
-    }
-
-    // 高斯消元求解
-    int solve() {
-        int nwline = 0; // 当前处理的行
-        for (int k = 0; k < n; ++k) {
-            // 找到当前列中绝对值最大的元素
-            int maxi = nwline;
-            for (int i = nwline + 1; i < n; ++i) {
-                if (Abs(A[i][k]) > Abs(A[maxi][k])) {
-                    maxi = i;
-                }
-            }
-            // 如果找到的主元接近0，说明此列无法消元
-            if (eq(A[maxi][k], 0)) continue;
-            // 交换当前行和主元行
-            for (int j = 0; j < n + 1; ++j) {
-                swap(A[nwline][j], A[maxi][j]);
-            }
-            // 对所有行进行消元操作
-            for (int i = 0; i < n; ++i) {
-                if (i == nwline) continue;
-                double mul = A[i][k] / A[nwline][k];
-                for (int j = k; j < n + 1; ++j) {
-                    A[i][j] -= A[nwline][j] * mul;
-                }
-            }
-            ++nwline;
-        }
-        // 如果不能找到足够的主元，说明可能无解或有无穷多解
-        if (nwline < n) {
-            while (nwline < n) {
-                // 如果常数项不为0，说明无解
-                if (!eq(A[nwline++][n], 0)) {
-                    return -1; // 无解
-                }
-            }
-            return 0; // 有无穷多解
-        } else {
-            // 唯一解
-            for (int i = 0; i < n; ++i) {
-                ans[i] = A[i][n] / A[i][i];
-            }
-            return 1; // 唯一解
-        }
-    }
-
-    // 输出解
-    void printSolution() const {
-        for (int i = 0; i < n; ++i) {
-            cout << fixed << setprecision(2);
-            cout << "x" << i + 1 << "=" << ans[i] << "\n";
-        }
-    }
+struct GaussianResult {
+    int status;
+    vector<double> solution;
 };
 
-void SINGLE_TEST() {
-    int n;
-    cin >> n;
-    GaussianElimination ge(n);
-    ge.readEquations();
-    int result = ge.solve();
-    if (result == 1) {
-        ge.printSolution(); // 输出唯一解
-    } else {
-        cout << result << "\n"; // -1表示无解，0表示有无穷多解
+GaussianResult gaussian_elimination(vector<vector<double>> matrix) {
+    int n = matrix.size(), row = 0;
+    for (const auto& values : matrix) assert(int(values.size()) == n + 1);
+    for (int column = 0; column < n && row < n; ++column) {
+        int pivot = row;
+        for (int i = row + 1; i < n; ++i) {
+            if (abs(matrix[i][column]) > abs(matrix[pivot][column])) pivot = i;
+        }
+        if (abs(matrix[pivot][column]) < kEpsilon) continue;
+        swap(matrix[row], matrix[pivot]);
+        for (int i = 0; i < n; ++i) {
+            if (i == row) continue;
+            double factor = matrix[i][column] / matrix[row][column];
+            for (int j = column; j <= n; ++j) matrix[i][j] -= matrix[row][j] * factor;
+        }
+        ++row;
     }
+    for (int i = row; i < n; ++i) {
+        if (abs(matrix[i][n]) >= kEpsilon) return {-1, {}};
+    }
+    if (row < n) return {0, {}};
+    vector<double> solution(n);
+    for (int i = 0; i < n; ++i) solution[i] = matrix[i][n] / matrix[i][i];
+    return {1, solution};
 }
 
-signed main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr), cout.tie(nullptr);
-
-    int SAMPLES = 1;
-    // cin >> SAMPLES;
-    for (int CUR = 1; CUR <= SAMPLES; CUR++) {
-        SINGLE_TEST();
-    }
+// ==================== 使用示例 ====================
+int main() {
+    auto result = gaussian_elimination({{1, 1, 3}, {2, -1, 0}});
+    if (result.status == 1) cout << result.solution[0] << ' ' << result.solution[1] << '\n'; // 1 2
 }

@@ -1,73 +1,52 @@
-#include <bits/stdc++.h>
-#ifndef ONLINE_JUDGE
-#include "_my_utils.h"
-#endif
-#define int long long
-
+/*
+算法：中国剩余定理（CRT）
+简介：合并两两互质模数下的同余式，求最小非负解和总模数。
+复杂度：n 个同余式时间 O(n log M)，递归栈空间 O(log M)。
+约定：residues[i] 对应 moduli[i]；模数为正且两两互质，其乘积不超过 long long 上限；使用 __int128 中间运算。
+*/
+#include <cassert>
+#include <iostream>
+#include <limits>
+#include <utility>
+#include <vector>
 using namespace std;
-using ll = long long;
-using PII = std::pair<int, int>;
 
-constexpr ll INF = 2E18 + 10;
-constexpr int N = 2E6 + 10;
-// struct CMP{bool operator()(const int & x, const int &y) const{ return x<y; }};
+// ==================== 算法模板 ====================
+using i64 = long long;
+using i128 = __int128;
 
-template <typename T = long long>
-bool extgcd(T a, T b, T &x, T &y, T d) {  // ax+by=d
-    if (!b && d % a) return false;
-    if (!b) {
-        x = d / a, y = 0;
-        return true;
+i128 extended_gcd(i128 a, i128 b, i128& x, i128& y) {
+    if (b == 0) {
+        x = 1;
+        y = 0;
+        return a;
     }
-    if (extgcd(b, a % b, y, x, d)) {
-        y -= a / b * x;
-        return true;
-    }
-    return false;
-}
-template <typename T = long long>
-T exgcd(T a, T b, T &x, T &y) {  // ax+by=gcd(a,b)
-    T d = a;
-    if (!b)
-        x = 1, y = 0;
-    else {
-        d = exgcd(b, a % b, y, x);
-        y -= a / b * x;
-    }
-    return d;
-}
-// x=a[i]%r[i]
-// x=a[j]%r[j]
-// r[i]、r[j]两两互质
-ll CRT(int n,vector<ll> &a,vector<ll> &r){
-    __int128_t ms = 1, ans = 0;
-    for (int i = 1; i <= n; i++) ms = ms * r[i];
-    for (int i = 1; i <= n; i++) {
-        __int128_t m = ms / r[i], b, y;
-        exgcd(m, (__int128_t)r[i], b, y);  // b * m mod r[i] = 1
-        ans = (ans + a[i] * m * b % ms) % ms;
-    }
-    return (ans % ms + ms) % ms;
+    i128 gcd = extended_gcd(b, a % b, y, x);
+    y -= a / b * x;
+    return gcd;
 }
 
-void SINGLE_TEST() 
-{
-    int n;
-    cin>>n;
-    vector<ll> a(n+1),b(n+1);
-    for(int i=1;i<=n;i++){
-        cin>>a[i]>>b[i];
+pair<i64, i64> chinese_remainder(const vector<i64>& residues, const vector<i64>& moduli) {
+    assert(residues.size() == moduli.size());
+    i128 product = 1, answer = 0;
+    for (i64 modulus : moduli) {
+        assert(modulus > 0);
+        product *= modulus;
+        assert(product <= numeric_limits<i64>::max());
     }
-    cout<<CRT(n,b,a)<<"\n";
+    for (int i = 0; i < int(moduli.size()); ++i) {
+        i128 part = product / moduli[i], inverse, unused;
+        i128 gcd = extended_gcd(part, moduli[i], inverse, unused);
+        assert(gcd == 1);
+        inverse = (inverse % moduli[i] + moduli[i]) % moduli[i];
+        i128 residue = (i128(residues[i]) % moduli[i] + moduli[i]) % moduli[i];
+        answer = (answer + residue * part * inverse) % product;
+    }
+    return {i64(answer), i64(product)};
 }
 
-signed main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr), cout.tie(nullptr);
-
-    int SAMPLES = 1;
-    // cin >> SAMPLES;
-    for (int CUR = 1; CUR <= SAMPLES; CUR++) {
-        SINGLE_TEST();
-    }
+// ==================== 使用示例 ====================
+int main() {
+    auto [remainder, modulus] = chinese_remainder({2, 3, 2}, {3, 5, 7});
+    cout << remainder << ' ' << modulus << '\n'; // 23 105，即 x = 23 + 105k
 }

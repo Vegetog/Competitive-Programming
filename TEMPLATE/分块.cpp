@@ -1,109 +1,60 @@
-#include <bits/stdc++.h>
-#ifndef ONLINE_JUDGE
-#include "_my_utils.h"
-#endif
-#define int long long
-
+/*
+算法：分块（区间加、区间和）
+简介：每块维护不含懒标记的元素和，整块修改累计加法标记。
+复杂度：时间：建表 O(n)，每次修改/查询 O(√n)；空间：O(n)。
+约定：下标从 0 开始；区间为 [l,r)，允许空区间；所有元素和及修改中间值须在 i64 范围内。
+*/
+#include <algorithm>
+#include <cassert>
+#include <cmath>
+#include <iostream>
+#include <vector>
 using namespace std;
-using ll = long long;
-using PII = std::pair<int, int>;
+using i64 = long long;
 
-constexpr ll INF = 2E18 + 10;
-constexpr int N = 2E6 + 10;
-
-void SINGLE_TEST() 
-{
-    int n,m;
-    cin>>n>>m;
-
-    const int T = sqrt(n);
-
-    vector<int> st(T+1), ed(T+1);
-    for(int i=1; i<=T; i++){
-        st[i] = n / T * (i - 1) + 1; // st[i]表示i号块的第一个元素的下标
-        ed[i] = n / T * i; // ed[i]表示i号块的最后一个元素的下标
+// ==================== 算法模板 ====================
+struct SqrtDecomposition {
+    int n, block_size;
+    vector<i64> values, sum, lazy;
+    explicit SqrtDecomposition(const vector<i64>& a)
+        : n(a.size()), block_size(max(1, static_cast<int>(sqrt(n)))), values(a),
+          sum((n + block_size - 1) / block_size), lazy(sum.size()) {
+        for (int i = 0; i < n; i++) sum[i / block_size] += values[i];
     }
-    ed[T] = n;
-    vector<int> bel(n+1),siz(T+1);
-    for(int i=1; i<=T; i++){
-        siz[i] = ed[i] - st[i] + 1;
-        for(int j=st[i]; j<=ed[i]; j++){
-            bel[j] = i; // 表示j号元素归属于i块
-        }
-    }
-
-
-    vector<int> a(n+1);
-    for(int i=1;i<=n;i++){
-        cin>>a[i];
-    }
-    vector<int> sum(T+1),tag(T+1);
-    for(int i=1;i<=T;i++){
-        for(int j=st[i];j<=ed[i];j++){
-            sum[i]+=a[j];
-        }
-    }
-
-    auto rangeApply=[&](int l,int r,int k)->void{
-        if(bel[l]==bel[r]){
-            for(int i=l;i<=r;i++){
-                a[i]+=k;
-                sum[bel[i]]+=k;
+    void range_add(int l, int r, i64 value) {
+        assert(0 <= l && l <= r && r <= n);
+        while (l < r) {
+            int block = l / block_size;
+            int end = min(n, (block + 1) * block_size);
+            if (l % block_size == 0 && end <= r) {
+                lazy[block] += value;
+                l = end;
+            } else {
+                values[l++] += value;
+                sum[block] += value;
             }
-            return ;
         }
-        for(int i=l;i<=ed[bel[l]];i++){
-            a[i]+=k;
-            sum[bel[i]]+=k;
-        }
-        for(int i=bel[l]+1;i<bel[r];i++){
-            tag[i]+=k;
-        }
-        for(int i=st[bel[r]];i<=r;i++){
-            a[i]+=k;
-            sum[bel[i]]+=k;
-        }
-    };
-
-    auto rangeQuery=[&](int l,int r)->ll{
-        ll res=0;
-        if(bel[l]==bel[r]){
-            for(int i=l;i<=r;i++){
-                res+=a[i]+tag[bel[i]];
+    }
+    i64 range_sum(int l, int r) const {
+        assert(0 <= l && l <= r && r <= n);
+        i64 result = 0;
+        while (l < r) {
+            int block = l / block_size;
+            int end = min(n, (block + 1) * block_size);
+            if (l % block_size == 0 && end <= r) {
+                result += sum[block] + lazy[block] * (end - l);
+                l = end;
+            } else {
+                result += values[l++] + lazy[block];
             }
-            return res;
         }
-        for(int i=l;i<=ed[bel[l]];i++){
-            res+=a[i]+tag[bel[i]];
-        }
-        for(int i=bel[l]+1;i<bel[r];i++){
-            res+=sum[i]+tag[i]*siz[i];
-        }
-        for(int i=st[bel[r]];i<=r;i++){
-            res+=a[i]+tag[bel[i]];
-        }
-        return res;
-    };
-
-    for(int i=1;i<=m;i++){
-        int op,x,y;
-        cin>>op>>x>>y;
-        if(op==1){
-            int k;cin>>k;
-            rangeApply(x,y,k);
-        }else{
-            cout<<rangeQuery(x,y)<<"\n";
-        }
+        return result;
     }
-}
+};
 
-signed main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr), cout.tie(nullptr);
-
-    int SAMPLES = 1;
-    // cin >> SAMPLES;
-    for (int CUR = 1; CUR <= SAMPLES; CUR++) {
-        SINGLE_TEST();
-    }
+// ==================== 使用示例 ====================
+int main() {
+    SqrtDecomposition blocks({1, 2, 3, 4, 5});
+    blocks.range_add(1, 4, 2);
+    cout << blocks.range_sum(0, 5) << '\n'; // 输出：21
 }

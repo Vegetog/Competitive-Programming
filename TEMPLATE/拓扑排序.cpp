@@ -1,59 +1,44 @@
-#include<bits/stdc++.h>
-using namespace std;
-#define ll long long
-#define int long long
-#define INF (long long)2e+18
-const int N=2e6+10;
-const int mod=1e9;
-typedef pair<int,int> PII;
 /*
-有向图对入度的要求是 0 
-无向图对入度的要求是 1 
+算法：拓扑排序（Kahn）
+简介：不断移除入度为 0 的顶点，得到有向无环图的合法顶点顺序。
+复杂度：时间 O(n+m)，额外空间 O(n)。
+约定：有向图顶点从 0 开始；返回 nullopt 表示存在环，空图返回空序列。
 */
-int n,m;
-int deg[N];
-void solve()
-{
-	cin>>n>>m;
-    vector<vector<int>> g(n+1);
-    while(m--){
-        int x,y;cin>>x>>y;
-        g[x].push_back(y);
-        deg[y]++;
+#include <iostream>
+#include <optional>
+#include <queue>
+#include <vector>
+using namespace std;
+
+// ==================== 算法模板 ====================
+optional<vector<int>> topological_sort(const vector<vector<int>>& graph) {
+    int n = static_cast<int>(graph.size());
+    vector<int> indegree(n, 0), order;
+    for (const auto& edges : graph) {
+        for (int v : edges) ++indegree[v];
     }
-    auto topo=[&]()->void{
-        queue<int> q;
-        for(int i=1;i<=n;i++){
-            if(deg[i]==0) q.push(i);
+    queue<int> pending;
+    for (int u = 0; u < n; ++u) {
+        if (indegree[u] == 0) pending.push(u);
+    }
+    while (!pending.empty()) {
+        int u = pending.front();
+        pending.pop();
+        order.push_back(u);
+        for (int v : graph[u]) {
+            if (--indegree[v] == 0) pending.push(v);
         }
-        vector<int> ans;
-        while(!q.empty()){
-            int t=q.front();
-            q.pop();
-            ans.push_back(t);
-            for(auto it : g[t]){
-                deg[it]--;
-                if(deg[it]==0) q.push(it);//有向图对入度的要求是 0 无向图对入度的要求是 1
-            }
-        }
-        if(ans.size()==n){
-            for(auto i : ans){
-                cout<<i<<' ';
-            }
-        }else{
-            cout<<-1;
-        }
-    };
-    topo();
+    }
+    if (static_cast<int>(order.size()) != n) return nullopt;
+    return order;
 }
 
-signed main()
-{
-	ios::sync_with_stdio(false);
-    cin.tie(0),cout.tie(0);
-    int T=1;
-	//cin>>T;
-    while(T--){
-    	solve();
-	}
+// ==================== 使用示例 ====================
+int main() {
+    vector<vector<int>> graph = {{1, 2}, {3}, {3}, {}};
+    auto order = topological_sort(graph);
+    if (order) {
+        for (int u : *order) cout << u << ' '; // 0 1 2 3
+        cout << '\n';
+    }
 }
