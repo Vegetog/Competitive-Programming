@@ -1,79 +1,34 @@
-#include<bits/stdc++.h>
+/*
+算法：区间合并
+简介：按左端点排序，合并相交的闭区间。
+复杂度：时间 O(n log n)，额外空间 O(n)。
+约定：区间为闭区间 [l,r]，要求 l <= r；共享端点时合并，空输入返回空数组。
+*/
+#include <algorithm>
+#include <iostream>
+#include <utility>
+#include <vector>
+
 using namespace std;
-#define ll long long
-#define int long long
-#define INF (long long)2e+18
-#define dbINF 1.79769e+308
-#define db double
-#define debug(a) cout<<#a<<"="<<a<<'\n';
-#define all(a) a.begin(),a.end()
-#define pb push_back
-const double eps=1e-10;
-typedef array<int,2> PII;
-//const int mod=1e9;
-const int N=2e6+10;
-int a[N],b[N];
-bool cmp(PII x,PII y){
-    return x[1]<y[1];
-}
-void solve()
-{
-	int n;cin>>n;
-    int mx=0,mn=INF;
-/////////////////////////////////////////////////    
-    vector<PII> q;
-    for(int i=1;i<=n;i++){
-        cin>>a[i]>>b[i];
-        mx=max({mx,a[i],b[i]});
-        if(a[i]>=b[i]){
-            mn=min(mn,b[i]);
-            q.pb({b[i],a[i]});
-        }
-    }
-    sort(all(q));
-    vector<PII> s;
-    for(auto [l,r] : q){
-        if(!s.empty()&&l<=s.back()[1]){
-            s.back()[1]=max(s.back()[1],r);
-        }else{
 
-            s.push_back({l,r});
+// ==================== 算法模板 ====================
+using i64 = long long;
+vector<pair<i64, i64>> merge_intervals(vector<pair<i64, i64>> intervals) {
+    sort(intervals.begin(), intervals.end());
+    vector<pair<i64, i64>> merged;
+    for (auto [left, right] : intervals) {
+        if (!merged.empty() && left <= merged.back().second) {
+            merged.back().second = max(merged.back().second, right);
+        } else {
+            merged.push_back({left, right});
         }
     }
-/////////////////////////////////////////////////
-    sort(all(s),cmp);
-    ll ans=0;
-    int las=0;
-    ll rr=0;
-    int le=0;
-    int ans1,ans2;
-    for(int i=0;i<s.size();i++){
-        int l=s[i][0],r=s[i][1];
-        if(i==s.size()-1){
-            ans1=ans2=ans;
-            ans2+=mx-l;
-            ans2+=mx-le;
-        }
-        
-        ans+=r-las+r-l;
-        las=l;
-        rr=max(rr,r);
-        le=l;
-    }
-    //debug(le);
-    ans+=mx-le;
-    if(mn==INF) mn=-INF;
-    int ans3=mx+mx-mn;
-    cout<<min({ans,ans2,ans3})<<'\n';
+    return merged;
 }
 
-signed main()
-{
-	ios::sync_with_stdio(false);
-    cin.tie(0),cout.tie(0);
-    int T=1;
-	//cin>>T;
-    while(T--){
-    	solve();
-	}
+// ==================== 使用示例 ====================
+int main() {
+    for (auto [left, right] : merge_intervals({{1, 3}, {2, 5}, {7, 8}})) {
+        cout << left << ' ' << right << '\n'; // 1 5 / 7 8
+    }
 }

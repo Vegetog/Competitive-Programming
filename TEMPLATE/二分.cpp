@@ -1,39 +1,44 @@
-#include<bits/stdc++.h>
+/*
+算法：二分查找
+简介：在升序数组中寻找第一个 >= x 的位置，或最后一个 <= x 的位置。
+复杂度：时间 O(log n)，空间 O(1)。
+约定：下标从 0 开始；后继不存在返回 n，前驱不存在返回 -1；允许空数组。
+*/
+#include <algorithm>
+#include <functional>
+#include <iostream>
+#include <vector>
+
 using namespace std;
-int a[2000005];
-//找后继 
-int bin_search(int *a,int n,int x){
-	int left=0,right=n;
-	while(left<right){
-		int mid=(left+right)>>1;
-		if(a[mid]>=x) right=mid;
-		else  left =mid+1;
-	}
-	return left;
-} 
-//找前驱 
-int bin_search2(int *a,int n,int x){
-	int left=0,right=n;
-	while(left<right){
-		int mid=(left+right+1)>>1;
-		if(a[mid]<=x) left=mid;
-		else  right =mid-1;
-	}
-	return left;
+
+// ==================== 算法模板 ====================
+template <class T> int lower_bound_index(const vector<T>& values, const T& target) {
+    int left = 0, right = values.size();
+    while (left < right) {
+        int middle = left + (right - left) / 2;
+        if (values[middle] >= target)
+            right = middle;
+        else
+            left = middle + 1;
+    }
+    return left;
 }
-int main()
-{
-	//
-	int k;
-	//lower_bound和 upper_bound,返回值为下标 
-	int pos1=lower_bound(num,num+6,k)-num;    //返回数组中第一个大于或等于被查数的值 
-	int pos2=upper_bound(num,num+6,k)-num;    //返回数组中第一个大于被查数的值
-	int pos3=lower_bound(num,num+6,k,greater<int>())-num;  //返回数组中第一个小于或等于被查数的值 
-	int pos4=upper_bound(num,num+6,k,greater<int>())-num;  //返回数组中第一个小于被查数的值
-	/*
-	vector找不到的时候是返回最后一个下标加1 的一个数
-	数组则返回0
-	*/
+template <class T> int predecessor_index(const vector<T>& values, const T& target) {
+    int left = 0, right = values.size();
+    while (left < right) {
+        int middle = left + (right - left) / 2;
+        if (values[middle] > target)
+            right = middle;
+        else
+            left = middle + 1;
+    }
+    return left - 1;
 }
 
-
+// ==================== 使用示例 ====================
+int main() {
+    vector<int> values{1, 3, 3, 7};
+    cout << lower_bound_index(values, 3) << ' ' << predecessor_index(values, 3) << '\n'; // 1 2
+    cout << lower_bound(values.begin(), values.end(), 3) - values.begin() << '\n';       // 1
+    // 降序数组改用 lower_bound(begin, end, x, greater<int>())。
+}

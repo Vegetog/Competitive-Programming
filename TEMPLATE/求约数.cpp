@@ -1,39 +1,32 @@
-#include<bits/stdc++.h>
+/*
+算法：试除法求约数
+简介：枚举不超过平方根的因数，成对收集并排序。
+复杂度：时间 O(√n + d log d)，空间 O(d)，d 为约数个数。
+约定：n > 0；使用 i <= n/i 避免平方溢出。
+*/
+#include <algorithm>
+#include <cassert>
+#include <iostream>
+#include <vector>
 using namespace std;
-#define ll long long
-#define int long long
-#define INF (long long)2e+18
-const int N=2e6+10;
-const int mod=1e9;
-typedef pair<int,int> PII;
 
-vector<int> get_divisors(int n){
-    vector<int> res;//存约数
-    for(int i=1;i<=n/i;i++){
-        if(n%i==0){
-            res.push_back(i);
-            if(i!=n/i) res.push_back(n/i);
-        }
+// ==================== 算法模板 ====================
+using i64 = long long;
+
+vector<i64> get_divisors(i64 n) {
+    assert(n > 0);
+    vector<i64> divisors;
+    for (i64 i = 1; i <= n / i; ++i) {
+        if (n % i != 0) continue;
+        divisors.push_back(i);
+        if (i != n / i) divisors.push_back(n / i);
     }
-    sort(res.begin(),res.end());
-    return res;
-}
-void solve()
-{
-	int n;cin>>n;
-    auto x=get_divisors(n);
-    for(auto i: x){
-        cout<<i<<' ';
-    }
+    sort(divisors.begin(), divisors.end());
+    return divisors;
 }
 
-signed main()
-{
-	ios::sync_with_stdio(false);
-    cin.tie(0),cout.tie(0);
-    int T=1;
-//	cin>>T;
-    while(T--){
-    	solve();
-	}
+// ==================== 使用示例 ====================
+int main() {
+    for (i64 divisor : get_divisors(12)) cout << divisor << ' '; // 1 2 3 4 6 12
+    cout << '\n';
 }

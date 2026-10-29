@@ -1,75 +1,70 @@
+/*
+算法：可持久化线段树（主席树）
+简介：每次插入复制一条值域路径，用两个前缀版本之差查询区间第 k 小。
+复杂度：时间：每次插入/查询 O(log V)；空间：n 次插入 O(n log V)，V 为值域大小。
+约定：原数组下标从 0 开始，查询区间 [l,r)，k 从 1 开始；值域 [lower,upper)，宽度 <= 2^31-1。
+*/
+#include <cassert>
 #include <iostream>
-#include <cstring>
-#include <algorithm>
+#include <limits>
 #include <vector>
-
 using namespace std;
-const int N = 2e5 + 10, INF = 1e9;
-int a[N];
-struct PresidentTree{
-    struct Node
-    {
-        int l, r;
-        int cnt;
+using i64 = long long;
+
+// ==================== 算法模板 ====================
+struct PersistentSegmentTree {
+    struct Node {
+        int left = 0, right = 0, count = 0;
     };
-    vector<Node> tr;
-    // PresidentTree() : tr(N << 5) {}
-    int idx ;
-    vector<int> root;
-    PresidentTree() : tr(N << 5),idx(0), root(N, 0) {}
-
-    void insert(int &u, int v, int l, int r, int x)
-    {
-        u = ++ idx;
-        tr[u] = tr[v];
-        tr[u].cnt ++ ;
-        if(l == r) return ;
-        int mid = l + r >> 1;
-        if(x <= mid) insert(tr[u].l, tr[v].l, l, mid, x);
-        else insert(tr[u].r, tr[v].r, mid + 1, r, x);
+    int lower, upper;
+    vector<Node> nodes{{}};
+    vector<int> roots{0};
+    PersistentSegmentTree(int low, int high) : lower(low), upper(high) {
+        assert(low < high && static_cast<i64>(high) - low <= numeric_limits<int>::max());
     }
-
-    int query(int p, int q, int l, int r, int k)
-    {
-        if(l == r) return l;
-        int cnt = tr[tr[q].l].cnt - tr[tr[p].l].cnt;
-        int mid = l + r >> 1;
-        if(k <= cnt) return query(tr[p].l, tr[q].l, l, mid, k);
-        if(k > cnt) return query(tr[p].r, tr[q].r, mid + 1, r, k - cnt);
+    int insert(int old, int l, int r, int value) {
+        int current = nodes.size();
+        nodes.push_back(nodes[old]);
+        nodes[current].count++;
+        if (r - l == 1) return current;
+        int mid = l + (r - l) / 2;
+        if (value < mid) {
+            int child = insert(nodes[old].left, l, mid, value);
+            nodes[current].left = child;
+        } else {
+            int child = insert(nodes[old].right, mid, r, value);
+            nodes[current].right = child;
+        }
+        return current;
+    }
+    void append(int value) {
+        assert(lower <= value && value < upper);
+        roots.push_back(insert(roots.back(), lower, upper, value));
+    }
+    int kth(int l, int r, int k) const {
+        assert(0 <= l && l < r && r < static_cast<int>(roots.size()) && 1 <= k && k <= r - l);
+        int before = roots[l], after = roots[r], low = lower, high = upper;
+        while (high - low > 1) {
+            int count = nodes[nodes[after].left].count - nodes[nodes[before].left].count;
+            int mid = low + (high - low) / 2;
+            if (k <= count) {
+                before = nodes[before].left;
+                after = nodes[after].left;
+                high = mid;
+            } else {
+                k -= count;
+                before = nodes[before].right;
+                after = nodes[after].right;
+                low = mid;
+            }
+        }
+        return low;
     }
 };
 
-/*
-5 5
-25957 6405 15770 26287 26465
-2 2 1
-3 4 1
-4 5 1
-1 2 2
-4 4 1
-*/
-int main()
-{
-    int n,m;
-    cin >> n >> m;
-    // vector<int> a(n+1);
-    PresidentTree pst;
-    for(int i = 1 ; i <= n ; i ++ )
-    {
-        cin >> a[i];
-        pst.insert(pst.root[i], pst.root[i - 1], -INF, INF, a[i]);
-    }
-    
-    for(int i = 1 ; i <= m ; i ++ )
-    {
-        int l, r, k;
-        cin >> l >> r >> k;
-        cout << pst.query(pst.root[l - 1], pst.root[r], -INF, INF, k) << endl;
-    }
-
-    // 释放空间
-    // delete[] pst.tr;
-    // delete[] pst.root;
-    
-    return 0;
+// ==================== 使用示例 ====================
+int main() {
+    PersistentSegmentTree tree(-10, 11);
+    for (int value : {5, -2, 3, 5}) tree.append(value);
+    cout << tree.kth(1, 4, 2) << '\n'; // 输出：3（[-2,3,5] 的第 2 小）
 }
