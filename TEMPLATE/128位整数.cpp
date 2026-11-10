@@ -16,55 +16,59 @@ using i64 = long long;
 using i128 = __int128;
 using u128 = unsigned __int128;
 
-bool read_i128(istream& input, i128& value) {
+// 作用：从流读取十进制 128 位整数；输入：in 和接收变量 value；输出：成功返回 true 并写入 value，读不到返回 false。
+bool read128(istream& in, i128& value) {
     string token;
-    if (!(input >> token)) return false;
+    if (!(in >> token)) return false;
     int begin = token[0] == '-' || token[0] == '+';
-    bool negative = token[0] == '-';
-    u128 magnitude = 0;
+    bool neg = token[0] == '-';
+    u128 mag = 0;
     assert(begin < int(token.size()));
     for (int i = begin; i < int(token.size()); ++i) {
         assert(token[i] >= '0' && token[i] <= '9');
-        magnitude = magnitude * 10 + (token[i] - '0');
+        mag = mag * 10 + (token[i] - '0');
     }
     // 避免直接对最小负数的绝对值做有符号转换或取反。
-    value = negative && magnitude ? -i128(magnitude - 1) - 1 : i128(magnitude);
+    value = neg && mag ? -i128(mag - 1) - 1 : i128(mag);
     return true;
 }
 
-string to_string_i128(i128 value) {
-    bool negative = value < 0;
-    u128 magnitude = negative ? u128(-(value + 1)) + 1 : u128(value);
-    string result;
+// 作用：转为十进制字符串；输入：有符号 128 位整数 value；输出：带符号的十进制表示。
+string str128(i128 value) {
+    bool neg = value < 0;
+    u128 mag = neg ? u128(-(value + 1)) + 1 : u128(value);
+    string res;
     do {
-        result += char('0' + magnitude % 10);
-        magnitude /= 10;
-    } while (magnitude);
-    if (negative) result += '-';
-    reverse(result.begin(), result.end());
-    return result;
+        res += char('0' + mag % 10);
+        mag /= 10;
+    } while (mag);
+    if (neg) res += '-';
+    reverse(res.begin(), res.end());
+    return res;
 }
 
-i64 integer_sqrt(i64 value) {
+// 作用：求整数平方根；输入：非负 value；输出：⌊√value⌋。
+i64 isqrt(i64 value) {
     assert(value >= 0);
-    i64 left = 0, right = min(value, 3037000499LL), answer = 0;
+    i64 left = 0, right = min(value, 3037000499LL), ans = 0;
     while (left <= right) {
         i64 middle = left + (right - left) / 2;
         if (middle == 0 || middle <= value / middle) {
-            answer = middle;
+            ans = middle;
             left = middle + 1;
         } else {
             right = middle - 1;
         }
     }
-    return answer;
+    return ans;
 }
 
 // ==================== 使用示例 ====================
+// 作用：运行固定示例；输入：无外部输入；输出：下方标明的算法调用结果。
 int main() {
-    istringstream input("-123456789012345678901234567890");
+    istringstream in("-123456789012345678901234567890");
     i128 value;
-    read_i128(input, value);
-    cout << to_string_i128(value) << '\n';               // -123456789012345678901234567890
-    cout << integer_sqrt(9223372036854775807LL) << '\n'; // 3037000499
+    read128(in, value);
+    cout << str128(value) << '\n';                // -123456789012345678901234567890
+    cout << isqrt(9223372036854775807LL) << '\n'; // 3037000499
 }

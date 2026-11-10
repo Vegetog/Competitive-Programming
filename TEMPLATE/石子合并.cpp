@@ -14,32 +14,30 @@ using namespace std;
 
 // ==================== 算法模板 ====================
 using i64 = long long;
-pair<i64, i64> stone_merge(const vector<i64>& weights) {
-    int n = weights.size();
+// 作用：求一行石子相邻合并的最小、最大代价；输入：非负堆重数组 a；输出：{最小代价, 最大代价}，空数组返回 {0,0}。
+pair<i64, i64> stones(const vector<i64>& a) {
+    int n = a.size();
     if (n == 0) return {0, 0};
-    vector<i64> prefix(n + 1);
-    for (int i = 0; i < n; i++) prefix[i + 1] = prefix[i] + weights[i];
-    vector minimum(n, vector<i64>(n)), maximum = minimum;
-    for (int length = 2; length <= n; length++) {
-        for (int left = 0; left + length <= n; left++) {
-            int right = left + length - 1;
-            i64 total = prefix[right + 1] - prefix[left];
-            minimum[left][right] = numeric_limits<i64>::max();
-            for (int middle = left; middle < right; middle++) {
-                minimum[left][right] =
-                    min(minimum[left][right],
-                        minimum[left][middle] + minimum[middle + 1][right] + total);
-                maximum[left][right] =
-                    max(maximum[left][right],
-                        maximum[left][middle] + maximum[middle + 1][right] + total);
+    vector<i64> s(n + 1);
+    for (int i = 0; i < n; i++) s[i + 1] = s[i] + a[i];
+    vector mn(n, vector<i64>(n)), mx = mn;
+    for (int len = 2; len <= n; len++) {
+        for (int l = 0; l + len <= n; l++) {
+            int r = l + len - 1;
+            i64 sum = s[r + 1] - s[l];
+            mn[l][r] = numeric_limits<i64>::max();
+            for (int mid = l; mid < r; mid++) {
+                mn[l][r] = min(mn[l][r], mn[l][mid] + mn[mid + 1][r] + sum);
+                mx[l][r] = max(mx[l][r], mx[l][mid] + mx[mid + 1][r] + sum);
             }
         }
     }
-    return {minimum[0][n - 1], maximum[0][n - 1]};
+    return {mn[0][n - 1], mx[0][n - 1]};
 }
 
 // ==================== 使用示例 ====================
+// 作用：演示石子合并；输入：无，使用堆重 {1,2,3}；输出：9 11。
 int main() {
-    auto [minimum, maximum] = stone_merge({1, 2, 3});
-    cout << minimum << ' ' << maximum << '\n'; // 9 11
+    auto [mn, mx] = stones({1, 2, 3});
+    cout << mn << ' ' << mx << '\n'; // 9 11
 }

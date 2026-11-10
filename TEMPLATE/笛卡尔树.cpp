@@ -10,28 +10,30 @@ using namespace std;
 using i64 = long long;
 
 // ==================== 算法模板 ====================
-struct CartesianTree {
+struct Cartesian {
     int root = -1;
-    vector<int> left, right;
-    explicit CartesianTree(const vector<i64>& a) : left(a.size(), -1), right(a.size(), -1) {
-        vector<int> stack;
+    vector<int> ls, rs;
+    // 作用：建立小根笛卡尔树；输入：数组 a；输出：root 与左右孩子 ls、rs，空节点记 -1。
+    explicit Cartesian(const vector<i64>& a) : ls(a.size(), -1), rs(a.size(), -1) {
+        vector<int> st;
         for (int i = 0; i < static_cast<int>(a.size()); i++) {
-            int last = -1;
-            while (!stack.empty() && a[stack.back()] > a[i]) {
-                last = stack.back();
-                stack.pop_back();
+            int p = -1;
+            while (!st.empty() && a[st.back()] > a[i]) {
+                p = st.back();
+                st.pop_back();
             }
-            left[i] = last;
-            if (!stack.empty()) right[stack.back()] = i;
-            stack.push_back(i);
+            ls[i] = p;
+            if (!st.empty()) rs[st.back()] = i;
+            st.push_back(i);
         }
-        if (!stack.empty()) root = stack.front();
+        if (!st.empty()) root = st.front();
     }
 };
 
 // ==================== 使用示例 ====================
+// 作用：演示本模板调用；输入：代码内固定数据；输出：下方标注的结果到标准输出。
 int main() {
-    CartesianTree tree({3, 1, 4, 2});
-    cout << tree.root << '\n';                            // 输出：1
-    cout << tree.left[1] << ' ' << tree.right[1] << '\n'; // 输出：0 3
+    Cartesian s({3, 1, 4, 2});
+    cout << s.root << '\n';                    // 输出：1
+    cout << s.ls[1] << ' ' << s.rs[1] << '\n'; // 输出：0 3
 }

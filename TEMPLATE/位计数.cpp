@@ -10,13 +10,15 @@
 using namespace std;
 
 // ==================== 算法模板 ====================
-int popcount(uint64_t value) {
-    int count = 0;
-    for (; value != 0; value &= value - 1) count++;
-    return count;
+// 作用：统计二进制中 1 的个数；输入：64 位无符号整数 x；输出：置位数，x=0 时返回 0。
+int popcount(uint64_t x) {
+    int cnt = 0;
+    for (; x != 0; x &= x - 1) cnt++;
+    return cnt;
 }
 
 // ==================== 使用示例 ====================
+// 作用：演示位计数；输入：无，使用 0b101101；输出：4。
 int main() {
     cout << popcount(0b101101ULL) << '\n'; // 4
 }

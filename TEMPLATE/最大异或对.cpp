@@ -13,45 +13,49 @@
 using namespace std;
 
 // ==================== 算法模板 ====================
-struct BinaryTrie {
-    vector<array<int, 2>> next{{0, 0}};
-    void insert(uint32_t value) {
-        int node = 0;
-        for (int bit = 31; bit >= 0; bit--) {
-            int digit = (value >> bit) & 1;
-            if (next[node][digit] == 0) {
-                next[node][digit] = next.size();
-                next.push_back({0, 0});
+struct XorTrie {
+    vector<array<int, 2>> ch{{0, 0}};
+    // 作用：插入 32 位整数；输入：无符号整数 x；输出：在 ch 中建立二进制路径，无返回值。
+    void add(uint32_t x) {
+        int u = 0;
+        for (int i = 31; i >= 0; i--) {
+            int b = (x >> i) & 1;
+            if (ch[u][b] == 0) {
+                ch[u][b] = ch.size();
+                ch.push_back({0, 0});
             }
-            node = next[node][digit];
+            u = ch[u][b];
         }
     }
-    uint32_t max_xor(uint32_t value) const {
-        if (next.size() == 1) return 0;
-        int node = 0;
-        uint32_t result = 0;
-        for (int bit = 31; bit >= 0; bit--) {
-            int digit = (value >> bit) & 1;
-            if (next[node][digit ^ 1] != 0) {
-                result |= uint32_t{1} << bit;
-                digit ^= 1;
+    // 作用：查询最大异或值；输入：无符号整数 x；输出：x 与已插入整数的最大异或值，空 Trie 返回 0。
+    uint32_t qry(uint32_t x) const {
+        if (ch.size() == 1) return 0;
+        int u = 0;
+        uint32_t ans = 0;
+        for (int i = 31; i >= 0; i--) {
+            int b = (x >> i) & 1;
+            if (ch[u][b ^ 1] != 0) {
+                ans |= uint32_t{1} << i;
+                b ^= 1;
             }
-            node = next[node][digit];
+            u = ch[u][b];
         }
-        return result;
+        return ans;
     }
 };
-uint32_t maximum_xor_pair(const vector<uint32_t>& values) {
-    BinaryTrie trie;
-    uint32_t result = 0;
-    for (uint32_t value : values) {
-        result = max(result, trie.max_xor(value));
-        trie.insert(value);
+// 作用：求最大异或对；输入：无符号整数数组 a；输出：不同下标两数的最大异或值，不足两项时为 0。
+uint32_t xor_pair(const vector<uint32_t>& a) {
+    XorTrie t;
+    uint32_t ans = 0;
+    for (uint32_t x : a) {
+        ans = max(ans, t.qry(x));
+        t.add(x);
     }
-    return result;
+    return ans;
 }
 
 // ==================== 使用示例 ====================
+// 作用：演示最大异或对；输入：3、10、5、25、2、8；输出：28。
 int main() {
-    cout << maximum_xor_pair({3, 10, 5, 25, 2, 8}) << '\n'; // 28
+    cout << xor_pair({3, 10, 5, 25, 2, 8}) << '\n'; // 28
 }

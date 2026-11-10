@@ -13,22 +13,24 @@ using namespace std;
 
 // ==================== 算法模板 ====================
 using i64 = long long;
-vector<pair<i64, i64>> merge_intervals(vector<pair<i64, i64>> intervals) {
-    sort(intervals.begin(), intervals.end());
-    vector<pair<i64, i64>> merged;
-    for (auto [left, right] : intervals) {
-        if (!merged.empty() && left <= merged.back().second) {
-            merged.back().second = max(merged.back().second, right);
+// 作用：合并相交闭区间；输入：区间数组 a，各区间满足 l <= r；输出：按左端点排序且互不相交的区间数组。
+vector<pair<i64, i64>> merge_seg(vector<pair<i64, i64>> a) {
+    sort(a.begin(), a.end());
+    vector<pair<i64, i64>> res;
+    for (auto [l, r] : a) {
+        if (!res.empty() && l <= res.back().second) {
+            res.back().second = max(res.back().second, r);
         } else {
-            merged.push_back({left, right});
+            res.push_back({l, r});
         }
     }
-    return merged;
+    return res;
 }
 
 // ==================== 使用示例 ====================
+// 作用：演示区间合并；输入：无，使用三段固定区间；输出：两行 1 5、7 8。
 int main() {
-    for (auto [left, right] : merge_intervals({{1, 3}, {2, 5}, {7, 8}})) {
-        cout << left << ' ' << right << '\n'; // 1 5 / 7 8
+    for (auto [l, r] : merge_seg({{1, 3}, {2, 5}, {7, 8}})) {
+        cout << l << ' ' << r << '\n'; // 1 5 / 7 8
     }
 }

@@ -11,51 +11,55 @@
 using namespace std;
 
 // ==================== 算法模板 ====================
-struct Lca {
-    vector<int> parent, depth, heavy, top;
+struct LCA {
+    vector<int> fa, dep, son, top;
 
-    explicit Lca(const vector<vector<int>>& graph, int root = 0) {
-        int n = static_cast<int>(graph.size());
-        assert(0 <= root && root < n);
-        parent.assign(n, -1);
-        depth.assign(n, 0);
-        heavy.assign(n, -1);
+    // 作用：预处理重链信息；输入：非空无向树 g、根 rt；输出：初始化 fa、dep、son、top，无返回值。
+    explicit LCA(const vector<vector<int>>& g, int rt = 0) {
+        int n = static_cast<int>(g.size());
+        assert(0 <= rt && rt < n);
+        fa.assign(n, -1);
+        dep.assign(n, 0);
+        son.assign(n, -1);
         top.resize(n);
-        vector<int> order = {root}, size(n, 1);
-        parent[root] = root;
+        vector<int> ord = {rt}, sz(n, 1);
+        fa[rt] = rt;
         for (int i = 0; i < n; ++i) {
-            int u = order[i];
-            for (int v : graph[u]) {
-                if (v == parent[u]) continue;
-                parent[v] = u;
-                depth[v] = depth[u] + 1;
-                order.push_back(v);
+            int u = ord[i];
+            for (int v : g[u]) {
+                if (v == fa[u]) continue;
+                fa[v] = u;
+                dep[v] = dep[u] + 1;
+                ord.push_back(v);
             }
         }
         for (int i = n - 1; i > 0; --i) {
-            int u = order[i], p = parent[u];
-            size[p] += size[u];
-            if (heavy[p] == -1 || size[u] > size[heavy[p]]) heavy[p] = u;
+            int u = ord[i], p = fa[u];
+            sz[p] += sz[u];
+            if (son[p] == -1 || sz[u] > sz[son[p]]) son[p] = u;
         }
-        for (int u : order) {
-            top[u] = u != root && heavy[parent[u]] == u ? top[parent[u]] : u;
+        for (int u : ord) {
+            top[u] = u != rt && son[fa[u]] == u ? top[fa[u]] : u;
         }
     }
 
+    // 作用：查询最近公共祖先；输入：顶点 u、v；输出：以构造时 rt 为根的最近公共祖先编号。
     int lca(int u, int v) const {
         while (top[u] != top[v]) {
-            if (depth[top[u]] < depth[top[v]]) swap(u, v);
-            u = parent[top[u]];
+            if (dep[top[u]] < dep[top[v]]) swap(u, v);
+            u = fa[top[u]];
         }
-        return depth[u] < depth[v] ? u : v;
+        return dep[u] < dep[v] ? u : v;
     }
 
-    int distance(int u, int v) const { return depth[u] + depth[v] - 2 * depth[lca(u, v)]; }
+    // 作用：查询树上距离；输入：顶点 u、v；输出：两点唯一路径的边数。
+    int dist(int u, int v) const { return dep[u] + dep[v] - 2 * dep[lca(u, v)]; }
 };
 
 // ==================== 使用示例 ====================
+// 作用：演示 LCA 与距离；输入：内置五点树；输出：1 3。
 int main() {
-    vector<vector<int>> graph = {{1, 2}, {0, 3, 4}, {0}, {1}, {1}};
-    Lca tree(graph);
-    cout << tree.lca(3, 4) << ' ' << tree.distance(2, 4) << '\n'; // 1 3
+    vector<vector<int>> g = {{1, 2}, {0, 3, 4}, {0}, {1}, {1}};
+    LCA t(g);
+    cout << t.lca(3, 4) << ' ' << t.dist(2, 4) << '\n'; // 1 3
 }

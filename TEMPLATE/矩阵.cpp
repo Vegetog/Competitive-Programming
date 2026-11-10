@@ -12,65 +12,69 @@ using namespace std;
 // ==================== 算法模板 ====================
 using i64 = long long;
 
-struct Matrix {
-    static constexpr i64 kModulus = 1000000007;
-    int rows, columns;
-    vector<vector<i64>> values;
+struct Mat {
+    static constexpr i64 P = 1000000007;
+    int n, m;
+    vector<vector<i64>> a;
 
-    explicit Matrix(int rows, int columns)
-        : rows(rows), columns(columns), values(rows, vector<i64>(columns)) {}
-    explicit Matrix(int n) : Matrix(n, n) {}
+    // 作用：构造零矩阵；输入：非负行数 n、列数 m；输出：n×m 的全零矩阵。
+    explicit Mat(int n, int m) : n(n), m(m), a(n, vector<i64>(m)) {}
+    // 作用：构造零方阵；输入：阶数 n；输出：n×n 的全零矩阵。
+    explicit Mat(int n) : Mat(n, n) {}
 
-    Matrix operator+(const Matrix& other) const {
-        assert(rows == other.rows && columns == other.columns);
-        Matrix result(rows, columns);
-        for (int i = 0; i < rows; ++i) {
-            for (int j = 0; j < columns; ++j)
-                result.values[i][j] = (values[i][j] + other.values[i][j]) % kModulus;
+    // 作用：矩阵加法；输入：同形矩阵；输出：逐元素模 P 后的运算结果矩阵。
+    Mat operator+(const Mat& other) const {
+        assert(n == other.n && m == other.m);
+        Mat res(n, m);
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < m; ++j) res.a[i][j] = (a[i][j] + other.a[i][j]) % P;
         }
-        return result;
+        return res;
     }
-    Matrix operator-(const Matrix& other) const {
-        assert(rows == other.rows && columns == other.columns);
-        Matrix result(rows, columns);
-        for (int i = 0; i < rows; ++i) {
-            for (int j = 0; j < columns; ++j)
-                result.values[i][j] = (values[i][j] - other.values[i][j] + kModulus) % kModulus;
+    // 作用：矩阵减法；输入：同形矩阵；输出：逐元素模 P 后的运算结果矩阵。
+    Mat operator-(const Mat& other) const {
+        assert(n == other.n && m == other.m);
+        Mat res(n, m);
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < m; ++j) res.a[i][j] = (a[i][j] - other.a[i][j] + P) % P;
         }
-        return result;
+        return res;
     }
-    Matrix operator*(const Matrix& other) const {
-        assert(columns == other.rows);
-        Matrix result(rows, other.columns);
-        for (int i = 0; i < rows; ++i) {
-            for (int k = 0; k < columns; ++k) {
-                for (int j = 0; j < other.columns; ++j) {
-                    result.values[i][j] =
-                        (result.values[i][j] + values[i][k] * other.values[k][j]) % kModulus;
+    // 作用：矩阵乘法；输入：列数与右矩阵行数相同的左矩阵和右矩阵；输出：逐元素模 P 后的运算结果矩阵。
+    Mat operator*(const Mat& other) const {
+        assert(m == other.n);
+        Mat res(n, other.m);
+        for (int i = 0; i < n; ++i) {
+            for (int k = 0; k < m; ++k) {
+                for (int j = 0; j < other.m; ++j) {
+                    res.a[i][j] = (res.a[i][j] + a[i][k] * other.a[k][j]) % P;
                 }
             }
         }
-        return result;
+        return res;
     }
-    Matrix power(i64 exponent) const {
-        assert(rows == columns && exponent >= 0);
-        Matrix result(rows), base = *this;
-        for (int i = 0; i < rows; ++i) result.values[i][i] = 1;
-        for (; exponent; exponent >>= 1, base = base * base) {
-            if (exponent & 1) result = result * base;
+    // 作用：求方阵幂；输入：当前方阵、非负指数 e；输出：模 P 的矩阵 e 次幂，0 次幂为单位矩阵。
+    Mat qpow(i64 e) const {
+        assert(n == m && e >= 0);
+        Mat res(n), base = *this;
+        for (int i = 0; i < n; ++i) res.a[i][i] = 1;
+        for (; e; e >>= 1, base = base * base) {
+            if (e & 1) res = res * base;
         }
-        return result;
+        return res;
     }
-    void print(ostream& output = cout) const {
-        for (const auto& row : values) {
-            for (int j = 0; j < columns; ++j) output << row[j] << (j + 1 == columns ? '\n' : ' ');
+    // 作用：输出矩阵；输入：当前矩阵和输出流 out（默认 cout）；输出：无返回值，逐行写出元素，以空格分隔。
+    void print(ostream& out = cout) const {
+        for (const auto& row : a) {
+            for (int j = 0; j < m; ++j) out << row[j] << (j + 1 == m ? '\n' : ' ');
         }
     }
 };
 
 // ==================== 使用示例 ====================
+// 作用：运行固定示例；输入：无外部输入；输出：下方标明的算法调用结果。
 int main() {
-    Matrix fibonacci(2);
-    fibonacci.values = {{1, 1}, {1, 0}};
-    cout << fibonacci.power(10).values[0][1] << '\n'; // 55
+    Mat fib(2);
+    fib.a = {{1, 1}, {1, 0}};
+    cout << fib.qpow(10).a[0][1] << '\n'; // 55
 }

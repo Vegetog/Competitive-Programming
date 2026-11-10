@@ -12,38 +12,41 @@
 using namespace std;
 
 // ==================== 算法模板 ====================
-vector<int> prefix_function(const string& pattern) {
-    int m = pattern.size();
-    vector<int> prefix(m);
+// 作用：求前缀函数；输入：字符串 p；输出：pi[i] 为 p[0..i] 的最长相等真前后缀长度。
+vector<int> get_pi(const string& p) {
+    int m = p.size();
+    vector<int> pi(m);
     for (int i = 1, j = 0; i < m; i++) {
-        while (j > 0 && pattern[i] != pattern[j]) j = prefix[j - 1];
-        if (pattern[i] == pattern[j]) j++;
-        prefix[i] = j;
+        while (j > 0 && p[i] != p[j]) j = pi[j - 1];
+        if (p[i] == p[j]) j++;
+        pi[i] = j;
     }
-    return prefix;
+    return pi;
 }
-vector<int> kmp_search(const string& text, const string& pattern) {
-    int n = text.size(), m = pattern.size();
+// 作用：查找全部匹配；输入：文本 s、模式 p；输出：允许重叠的匹配起点，空模式返回 0..s.size()。
+vector<int> kmp(const string& s, const string& p) {
+    int n = s.size(), m = p.size();
     if (m == 0) {
-        vector<int> positions(n + 1);
-        iota(positions.begin(), positions.end(), 0);
-        return positions;
+        vector<int> pos(n + 1);
+        iota(pos.begin(), pos.end(), 0);
+        return pos;
     }
-    auto prefix = prefix_function(pattern);
-    vector<int> positions;
+    auto pi = get_pi(p);
+    vector<int> pos;
     for (int i = 0, j = 0; i < n; i++) {
-        while (j > 0 && text[i] != pattern[j]) j = prefix[j - 1];
-        if (text[i] == pattern[j]) j++;
+        while (j > 0 && s[i] != p[j]) j = pi[j - 1];
+        if (s[i] == p[j]) j++;
         if (j == m) {
-            positions.push_back(i - m + 1);
-            j = prefix[j - 1];
+            pos.push_back(i - m + 1);
+            j = pi[j - 1];
         }
     }
-    return positions;
+    return pos;
 }
 
 // ==================== 使用示例 ====================
+// 作用：演示 KMP；输入：文本 ababa、模式 aba；输出：0 2。
 int main() {
-    for (int pos : kmp_search("ababa", "aba")) cout << pos << ' ';
+    for (int pos : kmp("ababa", "aba")) cout << pos << ' ';
     cout << '\n'; // 0 2
 }

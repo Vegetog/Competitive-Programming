@@ -12,58 +12,62 @@ using namespace std;
 using i64 = long long;
 using i128 = __int128;
 
-i64 extended_gcd(i64 a, i64 b, i64& x, i64& y) {
+// 作用：求扩展欧几里得系数；输入：非负 a、b 及引用 x、y；输出：gcd(a,b)，并写入满足 ax+by=gcd 的 x、y。
+i64 exgcd(i64 a, i64 b, i64& x, i64& y) {
     if (b == 0) {
         x = 1;
         y = 0;
         return a;
     }
-    i64 gcd = extended_gcd(b, a % b, y, x);
+    i64 gcd = exgcd(b, a % b, y, x);
     y -= a / b * x;
     return gcd;
 }
 
-bool solve_diophantine(i64 a, i64 b, i64 c, i128& x, i128& y) {
+// 作用：求二元一次方程的一组整数解；输入：a,b>0、常数 c、引用 x,y；输出：有解返回 true 并写入解，无解返回 false。
+bool dio(i64 a, i64 b, i64 c, i128& x, i128& y) {
     assert(a > 0 && b > 0);
-    i64 coefficient_x, coefficient_y;
-    i64 gcd = extended_gcd(a, b, coefficient_x, coefficient_y);
+    i64 cx, cy;
+    i64 gcd = exgcd(a, b, cx, cy);
     if (c % gcd != 0) return false;
-    x = i128(coefficient_x) * (c / gcd);
-    y = i128(coefficient_y) * (c / gcd);
+    x = i128(cx) * (c / gcd);
+    y = i128(cy) * (c / gcd);
     return true;
 }
 
-struct PositiveSolutions {
-    bool has_integer_solution = false;
+struct DioRes {
+    bool ok = false;
     i128 count = 0, min_x = 0, min_y = 0, max_x = 0, max_y = 0;
 };
 
-PositiveSolutions positive_solutions(i64 a, i64 b, i64 c) {
+// 作用：统计 ax+by=c 的正整数解；输入：a,b>0 和 c；输出：ok 表示有整数解，count 为正解数；有整数解时 min_x/min_y 为各坐标可达的最小正值，max_x/max_y 仅 count>0 时有效。
+DioRes pos_sol(i64 a, i64 b, i64 c) {
     i128 x, y;
-    if (!solve_diophantine(a, b, c, x, y)) return {};
-    i64 coefficient_x, coefficient_y;
-    i64 gcd = extended_gcd(a, b, coefficient_x, coefficient_y);
-    i64 step_x = b / gcd, step_y = a / gcd;
-    x = (x % step_x + step_x) % step_x;
-    if (x == 0) x = step_x;
+    if (!dio(a, b, c, x, y)) return {};
+    i64 cx, cy;
+    i64 gcd = exgcd(a, b, cx, cy);
+    i64 dx = b / gcd, dy = a / gcd;
+    x = (x % dx + dx) % dx;
+    if (x == 0) x = dx;
     y = (i128(c) - i128(a) * x) / b;
-    PositiveSolutions result;
-    result.has_integer_solution = true;
-    result.min_x = x;
-    result.min_y = (y % step_y + step_y) % step_y;
-    if (result.min_y == 0) result.min_y = step_y;
+    DioRes res;
+    res.ok = true;
+    res.min_x = x;
+    res.min_y = (y % dy + dy) % dy;
+    if (res.min_y == 0) res.min_y = dy;
     // count == 0 时 min_x/min_y 是分别可取得的最小正值，不能同时取到。
     if (y > 0) {
-        result.count = (y - 1) / step_y + 1;
-        result.max_x = x + (result.count - 1) * step_x;
-        result.max_y = y;
+        res.count = (y - 1) / dy + 1;
+        res.max_x = x + (res.count - 1) * dx;
+        res.max_y = y;
     }
-    return result;
+    return res;
 }
 
 // ==================== 使用示例 ====================
+// 作用：运行固定示例；输入：无外部输入；输出：下方标明的算法调用结果。
 int main() {
-    auto result = positive_solutions(2, 3, 13);
-    cout << i64(result.count) << ' ' << i64(result.min_x) << ' ' << i64(result.min_y) << ' '
-         << i64(result.max_x) << ' ' << i64(result.max_y) << '\n'; // 2 2 1 5 3
+    auto res = pos_sol(2, 3, 13);
+    cout << i64(res.count) << ' ' << i64(res.min_x) << ' ' << i64(res.min_y) << ' '
+         << i64(res.max_x) << ' ' << i64(res.max_y) << '\n'; // 2 2 1 5 3
 }

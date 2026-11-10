@@ -12,33 +12,36 @@
 using namespace std;
 
 // ==================== 算法模板 ====================
-template <class T> int lower_bound_index(const vector<T>& values, const T& target) {
-    int left = 0, right = values.size();
-    while (left < right) {
-        int middle = left + (right - left) / 2;
-        if (values[middle] >= target)
-            right = middle;
+// 作用：二分查找下界；输入：升序数组 a、目标 x；输出：首个 a[i] >= x 的下标，不存在返回 a.size()。
+template <class T> int lb(const vector<T>& a, const T& x) {
+    int l = 0, r = a.size();
+    while (l < r) {
+        int mid = l + (r - l) / 2;
+        if (a[mid] >= x)
+            r = mid;
         else
-            left = middle + 1;
+            l = mid + 1;
     }
-    return left;
+    return l;
 }
-template <class T> int predecessor_index(const vector<T>& values, const T& target) {
-    int left = 0, right = values.size();
-    while (left < right) {
-        int middle = left + (right - left) / 2;
-        if (values[middle] > target)
-            right = middle;
+// 作用：二分查找前驱；输入：升序数组 a、目标 x；输出：最后一个 a[i] <= x 的下标，不存在返回 -1。
+template <class T> int pred(const vector<T>& a, const T& x) {
+    int l = 0, r = a.size();
+    while (l < r) {
+        int mid = l + (r - l) / 2;
+        if (a[mid] > x)
+            r = mid;
         else
-            left = middle + 1;
+            l = mid + 1;
     }
-    return left - 1;
+    return l - 1;
 }
 
 // ==================== 使用示例 ====================
+// 作用：演示两种二分接口；输入：无，使用固定升序数组；输出：1 2 和标准库下界 1。
 int main() {
-    vector<int> values{1, 3, 3, 7};
-    cout << lower_bound_index(values, 3) << ' ' << predecessor_index(values, 3) << '\n'; // 1 2
-    cout << lower_bound(values.begin(), values.end(), 3) - values.begin() << '\n';       // 1
+    vector<int> a{1, 3, 3, 7};
+    cout << lb(a, 3) << ' ' << pred(a, 3) << '\n';                  // 1 2
+    cout << lower_bound(a.begin(), a.end(), 3) - a.begin() << '\n'; // 1
     // 降序数组改用 lower_bound(begin, end, x, greater<int>())。
 }

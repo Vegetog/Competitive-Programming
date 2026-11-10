@@ -11,35 +11,41 @@
 using namespace std;
 
 // ==================== 算法模板 ====================
-struct DisjointSet {
-    vector<int> parent, size;
+struct DSU {
+    vector<int> fa, sz;
 
-    explicit DisjointSet(int n) : parent(n), size(n, 1) { iota(parent.begin(), parent.end(), 0); }
+    // 作用：初始化独立集合；输入：元素个数 n；输出：含 n 个单元素集合的 DSU。
+    explicit DSU(int n) : fa(n), sz(n, 1) { iota(fa.begin(), fa.end(), 0); }
 
+    // 作用：查找并压缩路径；输入：元素 u；输出：u 所属集合的根，同时更新 fa。
     int find(int u) {
-        while (u != parent[u]) u = parent[u] = parent[parent[u]];
+        while (u != fa[u]) u = fa[u] = fa[fa[u]];
         return u;
     }
 
+    // 作用：判断连通；输入：元素 u、v；输出：二者是否属于同一集合。
     bool same(int u, int v) { return find(u) == find(v); }
 
+    // 作用：合并集合；输入：元素 u、v；输出：是否发生合并，同时更新 fa、sz。
     bool merge(int u, int v) {
         u = find(u);
         v = find(v);
         if (u == v) return false;
-        if (size[u] < size[v]) swap(u, v);
-        parent[v] = u;
-        size[u] += size[v];
+        if (sz[u] < sz[v]) swap(u, v);
+        fa[v] = u;
+        sz[u] += sz[v];
         return true;
     }
 
-    int component_size(int u) { return size[find(u)]; }
+    // 作用：查询集合大小；输入：元素 u；输出：u 所属集合的元素个数。
+    int size(int u) { return sz[find(u)]; }
 };
 
 // ==================== 使用示例 ====================
+// 作用：演示本模板调用；输入：代码内固定数据；输出：下方标注的结果到标准输出。
 int main() {
-    DisjointSet dsu(4);
+    DSU dsu(4);
     dsu.merge(0, 1);
     dsu.merge(1, 2);
-    cout << dsu.same(0, 2) << ' ' << dsu.component_size(1) << '\n'; // 1 3
+    cout << dsu.same(0, 2) << ' ' << dsu.size(1) << '\n'; // 1 3
 }

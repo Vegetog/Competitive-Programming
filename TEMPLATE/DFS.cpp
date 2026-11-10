@@ -11,44 +11,47 @@
 using namespace std;
 
 // ==================== 算法模板 ====================
-vector<int> dfs_order(const vector<vector<int>>& graph, int source) {
-    assert(0 <= source && source < static_cast<int>(graph.size()));
-    vector<int> order, stack = {source};
-    vector<bool> visited(graph.size(), false);
-    visited[source] = true;
-    while (!stack.empty()) {
-        int u = stack.back();
-        stack.pop_back();
-        order.push_back(u);
-        for (int v : graph[u]) {
-            if (visited[v]) continue;
-            visited[v] = true;
-            stack.push_back(v);
+// 作用：按深度优先顺序遍历；输入：邻接表 g、起点 s；输出：s 可达顶点的访问序列。
+vector<int> dfs(const vector<vector<int>>& g, int s) {
+    assert(0 <= s && s < static_cast<int>(g.size()));
+    vector<int> ord, st = {s};
+    vector<bool> vis(g.size(), false);
+    vis[s] = true;
+    while (!st.empty()) {
+        int u = st.back();
+        st.pop_back();
+        ord.push_back(u);
+        for (int v : g[u]) {
+            if (vis[v]) continue;
+            vis[v] = true;
+            st.push_back(v);
         }
     }
-    return order;
+    return ord;
 }
 
-vector<int> subtree_leaf_counts(const vector<vector<int>>& graph, int root = 0) {
-    auto order = dfs_order(graph, root);
-    vector<int> parent(graph.size(), -1), leaves(graph.size(), 0);
-    parent[root] = root;
-    for (int u : order) {
-        for (int v : graph[u]) {
-            if (v != parent[u]) parent[v] = u;
+// 作用：统计各子树叶子数；输入：非空无向树 g、根 rt；输出：以 rt 为根时各子树的叶子数。
+vector<int> leaf_cnt(const vector<vector<int>>& g, int rt = 0) {
+    auto ord = dfs(g, rt);
+    vector<int> fa(g.size(), -1), cnt(g.size(), 0);
+    fa[rt] = rt;
+    for (int u : ord) {
+        for (int v : g[u]) {
+            if (v != fa[u]) fa[v] = u;
         }
     }
-    reverse(order.begin(), order.end());
-    for (int u : order) {
-        if (leaves[u] == 0) leaves[u] = 1;
-        if (u != root) leaves[parent[u]] += leaves[u];
+    reverse(ord.begin(), ord.end());
+    for (int u : ord) {
+        if (cnt[u] == 0) cnt[u] = 1;
+        if (u != rt) cnt[fa[u]] += cnt[u];
     }
-    return leaves;
+    return cnt;
 }
 
 // ==================== 使用示例 ====================
+// 作用：演示子树叶子计数；输入：内置五点树；输出：3 2。
 int main() {
-    vector<vector<int>> graph = {{1, 2}, {0, 3, 4}, {0}, {1}, {1}};
-    auto leaves = subtree_leaf_counts(graph);
-    cout << leaves[0] << ' ' << leaves[1] << '\n'; // 3 2
+    vector<vector<int>> g = {{1, 2}, {0, 3, 4}, {0}, {1}, {1}};
+    auto cnt = leaf_cnt(g);
+    cout << cnt[0] << ' ' << cnt[1] << '\n'; // 3 2
 }

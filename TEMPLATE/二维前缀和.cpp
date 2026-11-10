@@ -5,6 +5,9 @@
 #include <vector>
 using namespace std;
 
+// 作用：预处理二维前缀和并回答矩形查询。
+// 输入：标准输入中的 n m q、n×m 矩阵及 q 组 x1 y1 x2 y2（1-based 闭矩形）。
+// 输出：标准输出中每行一个矩形元素和；正常结束返回 0。
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);

@@ -12,40 +12,44 @@ using namespace std;
 // ==================== 算法模板 ====================
 using i64 = long long;
 
-struct Combinatorics {
-    static constexpr i64 kModulus = 1000000007;
-    vector<i64> factorial, inverse_factorial;
+struct Comb {
+    static constexpr i64 P = 1000000007;
+    vector<i64> fac, ifac;
 
-    static i64 power(i64 base, i64 exponent) {
-        i64 result = 1;
-        for (; exponent; exponent >>= 1, base = base * base % kModulus) {
-            if (exponent & 1) result = result * base % kModulus;
+    // 作用：求模幂；输入：底数 0<=base<P、非负指数 e；输出：base^e mod P。
+    static i64 qpow(i64 base, i64 e) {
+        i64 res = 1;
+        for (; e; e >>= 1, base = base * base % P) {
+            if (e & 1) res = res * base % P;
         }
-        return result;
+        return res;
     }
-    explicit Combinatorics(int n) {
-        assert(n >= 0 && n < kModulus);
-        factorial.assign(n + 1, 1);
-        inverse_factorial.assign(n + 1, 1);
-        for (int i = 1; i <= n; ++i) factorial[i] = factorial[i - 1] * i % kModulus;
-        inverse_factorial[n] = power(factorial[n], kModulus - 2);
-        for (int i = n; i > 0; --i) inverse_factorial[i - 1] = inverse_factorial[i] * i % kModulus;
+    // 作用：预处理组合数表；输入：上界 n>=0 且 n<模数；输出：填好 0..n 阶乘 fac、逆阶乘 ifac 的对象。
+    explicit Comb(int n) {
+        assert(n >= 0 && n < P);
+        fac.assign(n + 1, 1);
+        ifac.assign(n + 1, 1);
+        for (int i = 1; i <= n; ++i) fac[i] = fac[i - 1] * i % P;
+        ifac[n] = qpow(fac[n], P - 2);
+        for (int i = n; i > 0; --i) ifac[i - 1] = ifac[i] * i % P;
     }
-    i64 combination(int n, int k) const {
+    // 作用：查询组合数 C(n,k)=n!/[k!(n-k)!]；输入：n、k，合法 n 已预处理；输出：模意义下的结果，n<0、k<0 或 k>n 时为 0。
+    i64 C(int n, int k) const {
         if (n < 0 || k < 0 || k > n) return 0;
-        assert(n < int(factorial.size()));
-        return factorial[n] * inverse_factorial[k] % kModulus * inverse_factorial[n - k] % kModulus;
+        assert(n < int(fac.size()));
+        return fac[n] * ifac[k] % P * ifac[n - k] % P;
     }
-    i64 permutation(int n, int k) const {
+    // 作用：查询排列数 A(n,k)=n!/(n-k)!；输入：n、k，合法 n 已预处理；输出：模意义下的结果，n<0、k<0 或 k>n 时为 0。
+    i64 A(int n, int k) const {
         if (n < 0 || k < 0 || k > n) return 0;
-        assert(n < int(factorial.size()));
-        return factorial[n] * inverse_factorial[n - k] % kModulus;
+        assert(n < int(fac.size()));
+        return fac[n] * ifac[n - k] % P;
     }
 };
 
 // ==================== 使用示例 ====================
+// 作用：运行固定示例；输入：无外部输入；输出：下方标明的算法调用结果。
 int main() {
-    Combinatorics combinatorics(10);
-    cout << combinatorics.combination(5, 2) << ' ' << combinatorics.permutation(5, 2)
-         << '\n'; // 10 20
+    Comb comb(10);
+    cout << comb.C(5, 2) << ' ' << comb.A(5, 2) << '\n'; // 10 20
 }
