@@ -11,27 +11,29 @@
 using namespace std;
 
 // ==================== 算法模板 ====================
-vector<int> bfs(const vector<vector<int>>& graph, int source) {
-    assert(0 <= source && source < static_cast<int>(graph.size()));
-    vector<int> dist(graph.size(), -1);
-    queue<int> pending;
-    dist[source] = 0;
-    pending.push(source);
-    while (!pending.empty()) {
-        int u = pending.front();
-        pending.pop();
-        for (int v : graph[u]) {
-            if (dist[v] != -1) continue;
-            dist[v] = dist[u] + 1;
-            pending.push(v);
+// 作用：求无权最短路；输入：邻接表 g、起点 s；输出：各点到 s 的最少边数，不可达为 -1。
+vector<int> bfs(const vector<vector<int>>& g, int s) {
+    assert(0 <= s && s < static_cast<int>(g.size()));
+    vector<int> d(g.size(), -1);
+    queue<int> q;
+    d[s] = 0;
+    q.push(s);
+    while (!q.empty()) {
+        int u = q.front();
+        q.pop();
+        for (int v : g[u]) {
+            if (d[v] != -1) continue;
+            d[v] = d[u] + 1;
+            q.push(v);
         }
     }
-    return dist;
+    return d;
 }
 
 // ==================== 使用示例 ====================
+// 作用：演示 BFS；输入：内置四点图；输出：2 -1。
 int main() {
-    vector<vector<int>> graph = {{1}, {0, 2}, {1}, {}};
-    auto dist = bfs(graph, 0);
-    cout << dist[2] << ' ' << dist[3] << '\n'; // 2 -1
+    vector<vector<int>> g = {{1}, {0, 2}, {1}, {}};
+    auto d = bfs(g, 0);
+    cout << d[2] << ' ' << d[3] << '\n'; // 2 -1
 }

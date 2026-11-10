@@ -10,16 +10,18 @@
 using namespace std;
 
 // ==================== 算法模板 ====================
-size_t count_occurrences(const string& text, const string& pattern) {
-    if (pattern.empty()) return text.size() + 1;
-    size_t count = 0;
-    for (size_t pos = text.find(pattern); pos != string::npos; pos = text.find(pattern, pos + 1)) {
-        count++;
+// 作用：统计子串出现次数；输入：文本 s、模式 p；输出：允许重叠的出现次数，空模式计 |s|+1 次。
+size_t count_sub(const string& s, const string& p) {
+    if (p.empty()) return s.size() + 1;
+    size_t cnt = 0;
+    for (size_t pos = s.find(p); pos != string::npos; pos = s.find(p, pos + 1)) {
+        cnt++;
     }
-    return count;
+    return cnt;
 }
 
 // ==================== 使用示例 ====================
+// 作用：演示子串计数；输入：文本 aaaa、模式 aa；输出：3。
 int main() {
-    cout << count_occurrences("aaaa", "aa") << '\n'; // 3
+    cout << count_sub("aaaa", "aa") << '\n'; // 3
 }

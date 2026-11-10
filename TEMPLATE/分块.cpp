@@ -13,48 +13,52 @@ using namespace std;
 using i64 = long long;
 
 // ==================== 算法模板 ====================
-struct SqrtDecomposition {
-    int n, block_size;
-    vector<i64> values, sum, lazy;
-    explicit SqrtDecomposition(const vector<i64>& a)
-        : n(a.size()), block_size(max(1, static_cast<int>(sqrt(n)))), values(a),
-          sum((n + block_size - 1) / block_size), lazy(sum.size()) {
-        for (int i = 0; i < n; i++) sum[i / block_size] += values[i];
+struct Block {
+    int n, B;
+    vector<i64> a, sum, tag;
+    // 作用：建立分块；输入：数组 a；输出：保存元素、块和及零加法标记的 Block。
+    explicit Block(const vector<i64>& a)
+        : n(a.size()), B(max(1, static_cast<int>(sqrt(n)))), a(a), sum((n + B - 1) / B),
+          tag(sum.size()) {
+        for (int i = 0; i < n; i++) sum[i / B] += a[i];
     }
-    void range_add(int l, int r, i64 value) {
+    // 作用：区间累加；输入：半开区间 [l,r)、增量 v；输出：更新元素/块和/标记，无返回值。
+    void add(int l, int r, i64 v) {
         assert(0 <= l && l <= r && r <= n);
         while (l < r) {
-            int block = l / block_size;
-            int end = min(n, (block + 1) * block_size);
-            if (l % block_size == 0 && end <= r) {
-                lazy[block] += value;
-                l = end;
+            int b = l / B;
+            int e = min(n, (b + 1) * B);
+            if (l % B == 0 && e <= r) {
+                tag[b] += v;
+                l = e;
             } else {
-                values[l++] += value;
-                sum[block] += value;
+                a[l++] += v;
+                sum[b] += v;
             }
         }
     }
-    i64 range_sum(int l, int r) const {
+    // 作用：查询区间和；输入：半开区间 [l,r)；输出：计入标记后的元素和，空区间为 0。
+    i64 qry(int l, int r) const {
         assert(0 <= l && l <= r && r <= n);
-        i64 result = 0;
+        i64 res = 0;
         while (l < r) {
-            int block = l / block_size;
-            int end = min(n, (block + 1) * block_size);
-            if (l % block_size == 0 && end <= r) {
-                result += sum[block] + lazy[block] * (end - l);
-                l = end;
+            int b = l / B;
+            int e = min(n, (b + 1) * B);
+            if (l % B == 0 && e <= r) {
+                res += sum[b] + tag[b] * (e - l);
+                l = e;
             } else {
-                result += values[l++] + lazy[block];
+                res += a[l++] + tag[b];
             }
         }
-        return result;
+        return res;
     }
 };
 
 // ==================== 使用示例 ====================
+// 作用：演示本模板调用；输入：代码内固定数据；输出：下方标注的结果到标准输出。
 int main() {
-    SqrtDecomposition blocks({1, 2, 3, 4, 5});
-    blocks.range_add(1, 4, 2);
-    cout << blocks.range_sum(0, 5) << '\n'; // 输出：21
+    Block s({1, 2, 3, 4, 5});
+    s.add(1, 4, 2);
+    cout << s.qry(0, 5) << '\n'; // 输出：21
 }

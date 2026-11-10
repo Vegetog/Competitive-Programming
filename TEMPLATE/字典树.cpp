@@ -15,52 +15,58 @@ using namespace std;
 // ==================== 算法模板 ====================
 struct Trie {
     struct Node {
-        array<int, 62> next{};
-        int count = 0, terminal = 0;
+        array<int, 62> ch{};
+        int cnt = 0, end = 0;
     };
-    vector<Node> nodes{1};
-    static int char_id(char c) {
+    vector<Node> tr{1};
+    // 作用：映射字符编号；输入：a-z、A-Z 或 0-9 中的字符 c；输出：0..61 中对应编号。
+    static int idx(char c) {
         if ('a' <= c && c <= 'z') return c - 'a';
         if ('A' <= c && c <= 'Z') return c - 'A' + 26;
         assert('0' <= c && c <= '9');
         return c - '0' + 52;
     }
-    void insert(const string& s) {
-        int node = 0;
-        nodes[node].count++;
+    // 作用：插入一个字符串；输入：字符串 s；输出：更新 tr 的路径计数和终点计数，无返回值。
+    void add(const string& s) {
+        int u = 0;
+        tr[u].cnt++;
         for (char c : s) {
-            int id = char_id(c);
-            if (nodes[node].next[id] == 0) {
-                nodes[node].next[id] = nodes.size();
-                nodes.emplace_back();
+            int id = idx(c);
+            if (tr[u].ch[id] == 0) {
+                tr[u].ch[id] = tr.size();
+                tr.emplace_back();
             }
-            node = nodes[node].next[id];
-            nodes[node].count++;
+            u = tr[u].ch[id];
+            tr[u].cnt++;
         }
-        nodes[node].terminal++;
+        tr[u].end++;
     }
-    int find_node(const string& s) const {
-        int node = 0;
+    // 作用：查找字符串路径；输入：字符串 s；输出：路径终点编号，不存在为 -1，空串返回根 0。
+    int find(const string& s) const {
+        int u = 0;
         for (char c : s) {
-            node = nodes[node].next[char_id(c)];
-            if (node == 0) return -1;
+            u = tr[u].ch[idx(c)];
+            if (u == 0) return -1;
         }
-        return node;
+        return u;
     }
-    int count_prefix(const string& s) const {
-        int node = find_node(s);
-        return node == -1 ? 0 : nodes[node].count;
+    // 作用：统计前缀匹配；输入：前缀 s；输出：以 s 开头的已插入字符串数，重复项重复计数。
+    int prefix(const string& s) const {
+        int u = find(s);
+        return u == -1 ? 0 : tr[u].cnt;
     }
-    int count_word(const string& s) const {
-        int node = find_node(s);
-        return node == -1 ? 0 : nodes[node].terminal;
+    // 作用：统计完整字符串；输入：字符串 s；输出：s 被插入的次数。
+    int count(const string& s) const {
+        int u = find(s);
+        return u == -1 ? 0 : tr[u].end;
     }
 };
 
 // ==================== 使用示例 ====================
+// 作用：演示字典树；输入：插入 abc、abA；输出：前缀 ab 的数量 2、完整串 abc 的数量 1。
 int main() {
-    Trie trie;
-    trie.insert("abc");
-    trie.insert("abA");
-    cout << trie.count_prefix("ab") << ' ' << trie.count_word("abc") << '\n'; // 2 1
+    Trie t;
+    t.add("abc");
+    t.add("abA");
+    cout << t.prefix("ab") << ' ' << t.count("abc") << '\n'; // 2 1
 }

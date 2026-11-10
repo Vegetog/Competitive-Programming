@@ -11,70 +11,79 @@ using namespace std;
 using i64 = long long;
 
 // ==================== 算法模板 ====================
-struct RangeSegmentTree {
+struct LazySeg {
     int n;
-    vector<i64> tree, lazy;
-    explicit RangeSegmentTree(const vector<i64>& a)
-        : n(a.size()), tree(4 * n + 4), lazy(4 * n + 4) {
+    vector<i64> t, tag;
+    // 作用：建立区间加线段树；输入：数组 a；输出：维护区间和及零加法标记的 LazySeg。
+    explicit LazySeg(const vector<i64>& a) : n(a.size()), t(4 * n + 4), tag(4 * n + 4) {
         if (n) build(1, 0, n, a);
     }
+    // 作用：递归建树；输入：节点 p、对应区间 [l,r)、原数组 a；输出：填充该子树的区间和。
     void build(int p, int l, int r, const vector<i64>& a) {
         if (r - l == 1) {
-            tree[p] = a[l];
+            t[p] = a[l];
             return;
         }
         int mid = l + (r - l) / 2;
         build(p * 2, l, mid, a);
         build(p * 2 + 1, mid, r, a);
-        tree[p] = tree[p * 2] + tree[p * 2 + 1];
+        t[p] = t[p * 2] + t[p * 2 + 1];
     }
-    void apply(int p, int len, i64 value) {
-        tree[p] += value * len;
-        lazy[p] += value;
+    // 作用：对整段加值；输入：节点 p、区间长度 len、增量 v；输出：更新 t[p] 与 tag[p]，无返回值。
+    void apply(int p, int len, i64 v) {
+        t[p] += v * len;
+        tag[p] += v;
     }
-    void push_down(int p, int l, int r) {
+    // 作用：下传加法标记；输入：节点 p 及其区间 [l,r)；输出：更新两个孩子并清空 tag[p]。
+    void push(int p, int l, int r) {
         int mid = l + (r - l) / 2;
-        apply(p * 2, mid - l, lazy[p]);
-        apply(p * 2 + 1, r - mid, lazy[p]);
-        lazy[p] = 0;
+        apply(p * 2, mid - l, tag[p]);
+        apply(p * 2 + 1, r - mid, tag[p]);
+        tag[p] = 0;
     }
-    void range_add(int l, int r, i64 value) {
+    // 作用：区间累加；输入：半开区间 [l,r)、增量 v；输出：更新区间和与懒标记，无返回值。
+    void add(int l, int r, i64 v) {
         assert(0 <= l && l <= r && r <= n);
-        range_add(1, 0, n, l, r, value);
+        add(1, 0, n, l, r, v);
     }
-    void add(int pos, i64 value) {
-        assert(0 <= pos && pos < n);
-        range_add(pos, pos + 1, value);
+    // 作用：单点累加；输入：下标 i、增量 v；输出：更新该点及区间和，无返回值。
+    void add(int i, i64 v) {
+        assert(0 <= i && i < n);
+        add(i, i + 1, v);
     }
-    void range_add(int p, int l, int r, int ql, int qr, i64 value) {
+    // 作用：递归区间累加；输入：节点 p、区间 [l,r)、目标 [ql,qr)、增量 v；输出：更新该子树，无返回值。
+    void add(int p, int l, int r, int ql, int qr, i64 v) {
         if (qr <= l || r <= ql) return;
         if (ql <= l && r <= qr) {
-            apply(p, r - l, value);
+            apply(p, r - l, v);
             return;
         }
-        push_down(p, l, r);
+        push(p, l, r);
         int mid = l + (r - l) / 2;
-        range_add(p * 2, l, mid, ql, qr, value);
-        range_add(p * 2 + 1, mid, r, ql, qr, value);
-        tree[p] = tree[p * 2] + tree[p * 2 + 1];
+        add(p * 2, l, mid, ql, qr, v);
+        add(p * 2 + 1, mid, r, ql, qr, v);
+        t[p] = t[p * 2] + t[p * 2 + 1];
     }
-    i64 query(int l, int r) {
+    // 作用：查询区间和；输入：半开区间 [l,r)；输出：区间元素和，空区间为 0。
+    i64 qry(int l, int r) {
         assert(0 <= l && l <= r && r <= n);
-        return query(1, 0, n, l, r);
+        return qry(1, 0, n, l, r);
     }
-    i64 query(int p, int l, int r, int ql, int qr) {
+    // 作用：递归查询并下传标记；输入：节点 p、区间 [l,r)、目标 [ql,qr)；输出：交集内的元素和。
+    i64 qry(int p, int l, int r, int ql, int qr) {
         if (qr <= l || r <= ql) return 0;
-        if (ql <= l && r <= qr) return tree[p];
-        push_down(p, l, r);
+        if (ql <= l && r <= qr) return t[p];
+        push(p, l, r);
         int mid = l + (r - l) / 2;
-        return query(p * 2, l, mid, ql, qr) + query(p * 2 + 1, mid, r, ql, qr);
+        return qry(p * 2, l, mid, ql, qr) + qry(p * 2 + 1, mid, r, ql, qr);
     }
 };
 
 // ==================== 使用示例 ====================
+// 作用：演示本模板调用；输入：代码内固定数据；输出：下方标注的结果到标准输出。
 int main() {
-    RangeSegmentTree tree({1, 2, 3, 4});
-    tree.range_add(0, 4, 2);
-    tree.add(1, 3);
-    cout << tree.query(1, 3) << '\n'; // 输出：12
+    LazySeg t({1, 2, 3, 4});
+    t.add(0, 4, 2);
+    t.add(1, 3);
+    cout << t.qry(1, 3) << '\n'; // 输出：12
 }

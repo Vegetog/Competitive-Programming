@@ -14,58 +14,61 @@ using namespace std;
 using i64 = long long;
 
 // ==================== 算法模板 ====================
-int weighted_centroid(const vector<vector<int>>& graph, const vector<i64>& weight) {
-    int n = static_cast<int>(graph.size());
-    assert(n > 0 && static_cast<int>(weight.size()) == n);
-    vector<int> parent(n, -1), order = {0};
-    vector<i64> subtree = weight;
+// 作用：求带权重心；输入：非空无向树 g、各点非负权 w；输出：一个重心编号，删除后各块点权不超过总权一半。
+int centroid(const vector<vector<int>>& g, const vector<i64>& w) {
+    int n = static_cast<int>(g.size());
+    assert(n > 0 && static_cast<int>(w.size()) == n);
+    vector<int> fa(n, -1), ord = {0};
+    vector<i64> sum = w;
     for (int i = 0; i < n; ++i) {
-        int u = order[i];
-        for (int v : graph[u]) {
-            if (v == parent[u]) continue;
-            parent[v] = u;
-            order.push_back(v);
+        int u = ord[i];
+        for (int v : g[u]) {
+            if (v == fa[u]) continue;
+            fa[v] = u;
+            ord.push_back(v);
         }
     }
     for (int i = n - 1; i > 0; --i) {
-        int u = order[i];
-        subtree[parent[u]] += subtree[u];
+        int u = ord[i];
+        sum[fa[u]] += sum[u];
     }
-    i64 total = subtree[0];
-    for (int u : order) {
-        i64 largest = total - subtree[u];
-        for (int v : graph[u]) {
-            if (parent[v] == u) largest = max(largest, subtree[v]);
+    i64 tot = sum[0];
+    for (int u : ord) {
+        i64 mx = tot - sum[u];
+        for (int v : g[u]) {
+            if (fa[v] == u) mx = max(mx, sum[v]);
         }
-        if (largest <= total / 2) return u;
+        if (mx <= tot / 2) return u;
     }
     return -1;
 }
 
 // 各边长度视为 1；重心使到所有顶点的加权距离和最小。
-i64 weighted_distance_sum(const vector<vector<int>>& graph, const vector<i64>& weight, int root) {
-    vector<int> dist(graph.size(), -1);
-    queue<int> pending;
-    dist[root] = 0;
-    pending.push(root);
-    i64 result = 0;
-    while (!pending.empty()) {
-        int u = pending.front();
-        pending.pop();
-        result += weight[u] * dist[u];
-        for (int v : graph[u]) {
+// 作用：求加权距离和；输入：无向树 g、点权 w、起点 rt，各边长度为 1；输出：所有 w[u]*dist(rt,u) 之和。
+i64 dist_sum(const vector<vector<int>>& g, const vector<i64>& w, int rt) {
+    vector<int> dist(g.size(), -1);
+    queue<int> q;
+    dist[rt] = 0;
+    q.push(rt);
+    i64 ans = 0;
+    while (!q.empty()) {
+        int u = q.front();
+        q.pop();
+        ans += w[u] * dist[u];
+        for (int v : g[u]) {
             if (dist[v] != -1) continue;
             dist[v] = dist[u] + 1;
-            pending.push(v);
+            q.push(v);
         }
     }
-    return result;
+    return ans;
 }
 
 // ==================== 使用示例 ====================
+// 作用：演示带权重心；输入：三点链，点权 1、3、1；输出：重心 1、加权距离和 2。
 int main() {
-    vector<vector<int>> graph = {{1}, {0, 2}, {1}};
-    vector<i64> weight = {1, 3, 1}; // 普通重心令所有点权为 1
-    int center = weighted_centroid(graph, weight);
-    cout << center << ' ' << weighted_distance_sum(graph, weight, center) << '\n'; // 1 2
+    vector<vector<int>> g = {{1}, {0, 2}, {1}};
+    vector<i64> w = {1, 3, 1}; // 普通重心令所有点权为 1
+    int c = centroid(g, w);
+    cout << c << ' ' << dist_sum(g, w, c) << '\n'; // 1 2
 }

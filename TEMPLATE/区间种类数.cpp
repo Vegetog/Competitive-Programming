@@ -15,38 +15,42 @@ using namespace std;
 using i64 = long long;
 
 // ==================== 算法模板 ====================
-vector<int> count_distinct(const vector<i64>& a, const vector<pair<int, int>>& queries) {
-    int n = a.size(), q = queries.size();
-    vector<int> tree(n + 1), order(q), answer(q);
-    auto add = [&](int pos, int value) {
-        for (int i = pos + 1; i <= n; i += i & -i) tree[i] += value;
+// 作用：离线统计不同值数；输入：数组 a、查询区间列表 qs（[l,r)）；输出：按原查询顺序排列的种类数。
+vector<int> distinct(const vector<i64>& a, const vector<pair<int, int>>& qs) {
+    int n = a.size(), q = qs.size();
+    vector<int> t(n + 1), ord(q), ans(q);
+    // 作用：更新最后出现位置的频次；输入：下标 p、增量 v；输出：修改树状数组 t，无返回值。
+    auto add = [&](int p, int v) {
+        for (int i = p + 1; i <= n; i += i & -i) t[i] += v;
     };
-    auto prefix_sum = [&](int end) {
-        int result = 0;
-        for (int i = end; i; i -= i & -i) result += tree[i];
-        return result;
+    // 作用：查询有效位置数；输入：前缀右端点 r0；输出：[0,r0) 的树状数组频次和。
+    auto sum = [&](int r0) {
+        int res = 0;
+        for (int i = r0; i; i -= i & -i) res += t[i];
+        return res;
     };
-    iota(order.begin(), order.end(), 0);
-    sort(order.begin(), order.end(),
-         [&](int x, int y) { return queries[x].second < queries[y].second; });
+    iota(ord.begin(), ord.end(), 0);
+    // 作用：按查询右端点排序；输入：查询编号 x、y；输出：qs[x] 的右端点是否更小。
+    sort(ord.begin(), ord.end(), [&](int x, int y) { return qs[x].second < qs[y].second; });
     unordered_map<i64, int> last;
-    int end = 0;
-    for (int id : order) {
-        auto [l, r] = queries[id];
+    int r0 = 0;
+    for (int id : ord) {
+        auto [l, r] = qs[id];
         assert(0 <= l && l <= r && r <= n);
-        while (end < r) {
-            if (last.count(a[end])) add(last[a[end]], -1);
-            last[a[end]] = end;
-            add(end++, 1);
+        while (r0 < r) {
+            if (last.count(a[r0])) add(last[a[r0]], -1);
+            last[a[r0]] = r0;
+            add(r0++, 1);
         }
-        answer[id] = prefix_sum(r) - prefix_sum(l);
+        ans[id] = sum(r) - sum(l);
     }
-    return answer;
+    return ans;
 }
 
 // ==================== 使用示例 ====================
+// 作用：演示本模板调用；输入：代码内固定数据；输出：下方标注的结果到标准输出。
 int main() {
-    auto answer = count_distinct({1, 2, 1, 3, 2}, {{0, 3}, {1, 5}, {2, 2}});
-    for (int value : answer) cout << value << ' '; // 输出：2 3 0
+    auto ans = distinct({1, 2, 1, 3, 2}, {{0, 3}, {1, 5}, {2, 2}});
+    for (int v : ans) cout << v << ' '; // 输出：2 3 0
     cout << '\n';
 }

@@ -14,37 +14,40 @@ using i64 = long long;
 
 // ==================== 算法模板 ====================
 struct Edge {
-    int from, to;
-    i64 weight;
+    int a, b;
+    i64 w;
 };
 
-optional<i64> kruskal(int n, vector<Edge> edges) {
-    vector<int> parent(n), size(n, 1);
-    iota(parent.begin(), parent.end(), 0);
+// 作用：求最小生成树；输入：顶点数 n、无向边集 e；输出：最小总边权，无法连通时为 nullopt。
+optional<i64> kruskal(int n, vector<Edge> e) {
+    vector<int> fa(n), sz(n, 1);
+    iota(fa.begin(), fa.end(), 0);
+    // 作用：查找并压缩路径；输入：顶点 u；输出：所在集合的根，同时更新 fa。
     auto find = [&](int u) {
-        while (u != parent[u]) u = parent[u] = parent[parent[u]];
+        while (u != fa[u]) u = fa[u] = fa[fa[u]];
         return u;
     };
-    sort(edges.begin(), edges.end(),
-         [](const Edge& a, const Edge& b) { return a.weight < b.weight; });
-    i64 total = 0;
-    int count = 0;
-    for (auto [from, to, weight] : edges) {
-        int u = find(from), v = find(to);
+    // 作用：按边权比较；输入：边 a、b；输出：a.w < b.w，用于升序排序。
+    sort(e.begin(), e.end(), [](const Edge& a, const Edge& b) { return a.w < b.w; });
+    i64 ans = 0;
+    int cnt = 0;
+    for (auto [a, b, w] : e) {
+        int u = find(a), v = find(b);
         if (u == v) continue;
-        if (size[u] < size[v]) swap(u, v);
-        parent[v] = u;
-        size[u] += size[v];
-        total += weight;
-        ++count;
+        if (sz[u] < sz[v]) swap(u, v);
+        fa[v] = u;
+        sz[u] += sz[v];
+        ans += w;
+        ++cnt;
     }
-    if (count != max(0, n - 1)) return nullopt;
-    return total;
+    if (cnt != max(0, n - 1)) return nullopt;
+    return ans;
 }
 
 // ==================== 使用示例 ====================
+// 作用：演示最小生成树；输入：内置三点图；输出：3。
 int main() {
-    vector<Edge> edges = {{0, 1, 5}, {0, 2, 1}, {1, 2, 2}};
-    auto weight = kruskal(3, edges);
-    if (weight) cout << *weight << '\n'; // 3；nullopt 表示图不连通
+    vector<Edge> e = {{0, 1, 5}, {0, 2, 1}, {1, 2, 2}};
+    auto w = kruskal(3, e);
+    if (w) cout << *w << '\n'; // 3；nullopt 表示图不连通
 }

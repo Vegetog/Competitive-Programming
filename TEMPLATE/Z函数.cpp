@@ -12,21 +12,23 @@
 using namespace std;
 
 // ==================== 算法模板 ====================
-vector<int> z_function(const string& s) {
+// 作用：求 Z 函数；输入：字符串 s；输出：z[i] 为 s 与后缀 s[i..] 的最长公共前缀长度，z[0]=|s|。
+vector<int> get_z(const string& s) {
     int n = s.size();
     vector<int> z(n);
     if (n == 0) return z;
     z[0] = n;
-    for (int i = 1, left = 0, right = 0; i < n; i++) {
-        if (i < right) z[i] = min(right - i, z[i - left]);
+    for (int i = 1, l = 0, r = 0; i < n; i++) {
+        if (i < r) z[i] = min(r - i, z[i - l]);
         while (i + z[i] < n && s[z[i]] == s[i + z[i]]) z[i]++;
-        if (i + z[i] > right) left = i, right = i + z[i];
+        if (i + z[i] > r) l = i, r = i + z[i];
     }
     return z;
 }
 
 // ==================== 使用示例 ====================
+// 作用：演示 Z 函数；输入：ababa；输出：5 0 3 0 1。
 int main() {
-    for (int length : z_function("ababa")) cout << length << ' ';
+    for (int x : get_z("ababa")) cout << x << ' ';
     cout << '\n'; // 5 0 3 0 1
 }

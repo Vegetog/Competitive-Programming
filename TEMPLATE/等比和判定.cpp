@@ -12,11 +12,12 @@ using namespace std;
 // ==================== 算法模板 ====================
 using i64 = long long;
 
-struct GeometricSums {
+struct GeoSum {
     i64 limit;
     unordered_set<i64> sums;
 
-    explicit GeometricSums(i64 limit) : limit(limit) {
+    // 作用：预处理至少四项的等比和；输入：非负上限 limit；输出：保存可行等比和集合的对象，三项和由 has 查询。
+    explicit GeoSum(i64 limit) : limit(limit) {
         assert(limit >= 0);
         // 大于立方根的底数只能形成三项和，留到查询时处理。
         for (i64 base = 2; base <= limit / base / base; ++base) {
@@ -29,7 +30,8 @@ struct GeometricSums {
             }
         }
     }
-    bool contains(i64 value) const {
+    // 作用：判断等比和表示；输入：0<=value<=limit；输出：可写为 1+k+…+k^e（k>=2,e>=2）时返回 true。
+    bool has(i64 value) const {
         assert(value >= 0 && value <= limit);
         if (sums.count(value)) return true;
         i64 left = 2, right = value / 2;
@@ -49,8 +51,8 @@ struct GeometricSums {
 };
 
 // ==================== 使用示例 ====================
+// 作用：运行固定示例；输入：无外部输入；输出：下方标明的算法调用结果。
 int main() {
-    GeometricSums sums(1000);
-    cout << sums.contains(7) << ' ' << sums.contains(15) << ' ' << sums.contains(8)
-         << '\n'; // 1 1 0
+    GeoSum sums(1000);
+    cout << sums.has(7) << ' ' << sums.has(15) << ' ' << sums.has(8) << '\n'; // 1 1 0
 }
